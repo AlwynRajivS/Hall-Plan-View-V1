@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -24,18 +24,11 @@
     color:#0f172a;
   }
 
-  .container1{
-    max-width:960px;
-    margin:18px auto;
-    text-align:center;
-    padding:18px;
-  }
-.container{
+  .container{
     max-width:960px;
     margin:18px auto;
     padding:18px;
   }
-  
 
   .card{
     background:var(--card);
@@ -181,7 +174,6 @@
   .motivate-box{
     margin-top:20px;
     padding:14px;
-
     background:linear-gradient(90deg,#0b63d6,#1d8bf2);
     color:white;
     font-weight:700;
@@ -203,10 +195,6 @@
 </head>
 
 <body>
-
-  <div class="container1"><header><h1>
-    Kamaraj College of Engineering and Technology <br> (An Autonomous Institution)</h1></header>
-  </div>
 <div class="container">
   <header><h1>Exam Hall — Student View</h1></header>
 
@@ -233,7 +221,7 @@
 
     <div style="display:flex;gap:10px;margin-top:12px;align-items:center">
       <button class="primary" id="viewBtn" onclick="showInstructions()">Check Seating</button>
-      <div class="notice">Read instructions before viewing.</div>
+      <div class="notice">Read instructions before viewing. Each view increments seen count.</div>
     </div>
 
     <!-- Result -->
@@ -274,7 +262,7 @@
 </div>
 
 <script>
-const GS_URL = "https://script.google.com/macros/s/AKfycbytUD8I31UdapA5sBmWGP02ofdpBMeRtvFFb82m85Vm0EQd_WYhMWqI_2KTxhq7-x9q/exec";
+const GS_URL = "https://script.google.com/macros/s/AKfycbyjZo6CuKOi-Y7SEyAqBxQ1QhX_IFgVAJTS1dpYoe4IiEkmBASoTRUNVPUtSYTTHT92/exec";
 
 function showInstructions(){
   if(!document.getElementById('date').value || !document.getElementById('regno').value.trim()){
@@ -375,4 +363,3 @@ async function viewHallPlan(){
 
 </body>
 </html>
-
