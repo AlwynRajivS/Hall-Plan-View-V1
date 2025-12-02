@@ -191,6 +191,55 @@
       transform:translateY(0);
     }
   }
+
+  #popupOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+
+.popupBox{
+  background:white;
+  padding:20px 24px;
+  border-radius:12px;
+  width:90%;
+  max-width:420px;
+  text-align:center;
+  box-shadow:0 10px 35px rgba(0,0,0,0.25);
+  animation:fadeIn 0.3s ease-out;
+}
+
+.popupBox h3{
+  margin-bottom:10px;
+  font-size:1.3rem;
+  font-weight:700;
+}
+
+.popupBox p{
+  font-size:1rem;
+  margin-bottom:18px;
+  color:#555;
+}
+
+.popupBox button{
+  padding:10px 20px;
+  background:#0b63d6;
+  color:white;
+  border:none;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
 </style>
 </head>
 
@@ -261,12 +310,31 @@
   </div>
 </div>
 
+<!-- Custom Popup -->
+<div id="popupOverlay" style="display:none;">
+  <div class="popupBox">
+    <h3 id="popupTitle">Message</h3>
+    <p id="popupMessage"></p>
+    <button onclick="closePopup()">OK</button>
+  </div>
+</div>
+
 <script>
-const GS_URL = "https://script.google.com/macros/s/AKfycbyjZo6CuKOi-Y7SEyAqBxQ1QhX_IFgVAJTS1dpYoe4IiEkmBASoTRUNVPUtSYTTHT92/exec";
+const GS_URL = "https://script.google.com/macros/s/AKfycbxD-gGXwodZw5JyueD8h8Ic5nHVh-yAE-FRJW2kB75foEq2Fc0QXo8bv6JzQCVMe4X0/exec";
+
+function showPopup(message, title="Alert"){
+  document.getElementById("popupTitle").innerText = title;
+  document.getElementById("popupMessage").innerText = message;
+  document.getElementById("popupOverlay").style.display = "flex";
+}
+
+function closePopup(){
+  document.getElementById("popupOverlay").style.display = "none";
+}
 
 function showInstructions(){
   if(!document.getElementById('date').value || !document.getElementById('regno').value.trim()){
-    alert("Please enter date and register number");
+    showPopup("Please enter date and register number", "Missing Inputs");
     return;
   }
   document.getElementById("instrModal").style.display="flex";
@@ -299,7 +367,7 @@ async function viewHallPlan(){
     document.getElementById("resultArea").style.display="block";
 
     if(j.status!=="success"){
-      alert(j.message || "Not found");
+      showPopup(j.message || "No record found for this Register Number on this Date/Session");
       return;
     }
 
@@ -354,7 +422,7 @@ async function viewHallPlan(){
 
   } 
   catch(e){
-    alert("Network error");
+    showPopup("Network error. Please check your connection and try again.", "Connection Issue");
     btn.disabled=false;
     btn.innerText="Check Seating";
   }
