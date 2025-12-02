@@ -531,8 +531,8 @@ async function viewHallPlan() {
 
     document.getElementById("resultArea").style.display = "block";
 
-    const me = j.me || {};
-    const hallPlan = j.hallPlan || [];
+    const me = j.me || {};            // student info
+    const hallPlan = j.hallPlan || []; // all hall seats
 
     // ---------------- STUDENT INFO ----------------
     document.getElementById("studentInfo").style.display = "block";
@@ -542,34 +542,40 @@ async function viewHallPlan() {
       <div><b>Seat No:</b> ${me.Seat}</div>
     `;
 
-    // ---------------- DYNAMIC SEAT GRID ----------------
-    const totalSeats = hallPlan.length || 25; // fallback default 25
+    // ---------------- DYNAMIC GRID USING REAL SEAT NUMBERS ----------------
+    // Extract real seat numbers from backend
+    const seatList = hallPlan.map(x => Number(x.Seat)).sort((a, b) => a - b);
+    const totalSeats = seatList.length;
 
-    // Auto-calc for near-square grid
+    if (totalSeats === 0) {
+      showPopup("Hall plan empty", "No Data");
+      return;
+    }
+
+    // Auto calc rows & cols for near square grid
     let cols = Math.ceil(Math.sqrt(totalSeats));
     let rows = Math.ceil(totalSeats / cols);
 
-    // Snake matrix build
+    // Build grid row-wise in snake pattern
     const finalMatrix = [];
-    let seatNumber = 1;
+    let index = 0;
 
     for (let r = 0; r < rows; r++) {
       const rowArr = [];
 
       for (let c = 0; c < cols; c++) {
-        if (seatNumber <= totalSeats) {
-          rowArr.push(seatNumber++);
+        if (index < seatList.length) {
+          rowArr.push(seatList[index++]);
         } else {
-          rowArr.push(""); // empty cell
+          rowArr.push("");
         }
       }
 
-      if (r % 2 === 1) rowArr.reverse(); // Snake pattern
-
+      if (r % 2 === 1) rowArr.reverse(); // snake pattern
       finalMatrix.push(rowArr);
     }
 
-    // Render the Grid
+    // Render the grid
     const grid = document.getElementById("gridContainer");
     grid.style.gridTemplateColumns = `repeat(${cols}, var(--cell-size))`;
     grid.innerHTML = "";
@@ -585,6 +591,7 @@ async function viewHallPlan() {
           continue;
         }
 
+        // highlight allotted seat
         if (Number(me.Seat) === seatNo) {
           div.className = "cell me";
           div.innerText = seatNo;
@@ -600,7 +607,7 @@ async function viewHallPlan() {
     // ---------------- MOTIVATION BOX ----------------
     document.getElementById("motivateBox").style.display = "block";
 
-    // ---------------- Seen Count Update ----------------
+    // ---------------- Seen Counter ----------------
     if (!hasIncremented(date, session, reg)) {
       const now = new Date();
       const ist = formatToIST(now);
