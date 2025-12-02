@@ -136,14 +136,23 @@ function uploadFile() {
 
 // ===================== DELETE RECORDS =====================
 function deleteRecords() {
-  const date = document.getElementById("delDate").value;
+  const dateInput = document.getElementById("delDate").value; // yyyy-mm-dd
   const session = document.getElementById("delSession").value;
 
-  if(!date || !session) { alert("Fill date and session"); return; }
+  if(!dateInput || !session) {
+    alert("Fill date and session");
+    return;
+  }
 
-  if(!confirm(`Are you sure to delete all records for ${date} - ${session}?`)) return;
+  // Convert yyyy-mm-dd → mm/dd/yyyy for user display
+  const parts = dateInput.split("-");
+  const formattedDate = `${parts[1]}/${parts[2]}/${parts[0]}`;
 
-  fetch(`${GS_URL}?action=deleteHallPlan&date=${date}&session=${session}`)
+  if(!confirm(`Are you sure to delete all records for ${formattedDate} - ${session}?`))
+    return;
+
+  // Send yyyy-mm-dd to Google Script
+  fetch(`${GS_URL}?action=deleteHallPlan&date=${dateInput}&session=${session}`)
     .then(res => res.json())
     .then(data => {
       if(data.status === "success") {
@@ -153,6 +162,8 @@ function deleteRecords() {
       }
     });
 }
+
+
 </script>
 
 </body>
