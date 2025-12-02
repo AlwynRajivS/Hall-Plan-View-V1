@@ -137,7 +137,7 @@ function uploadFile() {
 // ===================== DELETE RECORDS =====================
 
 function deleteHallPlan(e) {
-  const date = e.parameter.date;        // already yyyy-mm-dd
+  const date = e.parameter.date;        // yyyy-mm-dd
   const session = e.parameter.session;
 
   if(!date || !session) {
@@ -148,20 +148,30 @@ function deleteHallPlan(e) {
   const data = sh.getDataRange().getValues();
 
   let deleted = 0;
+  let debug = [];
 
-  // Loop bottom → top to avoid skipping rows
   for (let i = data.length - 1; i >= 1; i--) {
-    const rowDate = String(data[i][0]).trim();
-    const rowSession = String(data[i][1]).trim();
 
-    if (rowDate === date && rowSession === session) {
+    // Collect debug info
+    debug.push({
+      row: i + 1,
+      readDate: data[i][0],
+      readSession: data[i][1]
+    });
+
+    if (String(data[i][0]).trim() === date && String(data[i][1]).trim() === session) {
       sh.deleteRow(i + 1);
       deleted++;
     }
   }
 
-  return jsonResp({ status: "success", deleted: deleted });
+  return jsonResp({ 
+    status: "success", 
+    deleted: deleted,
+    debug: debug // return all row values so we see actual DB content
+  });
 }
+
 
 
 </script>
