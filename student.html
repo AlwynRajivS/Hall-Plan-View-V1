@@ -468,94 +468,85 @@ async function viewHallPlan(){
     btn.disabled=false; 
     btn.innerText='Check Seating';
 
-    document.getElementById("resultArea").style.display="block";
-
-    // Show student & hall info
-    document.getElementById("studentInfo").innerHTML = `
-      <div class="hall-title">Hall: ${j.me.Hall}</div><br>
-      <b>Register No:</b> ${j.me.RegNo}<br>
-      <b>Seat No:</b> ${j.me.Seat}
-    `;document.getElementById("studentInfo").innerHTML = `Hall: <b>${j.me.Hall}</b> &nbsp; | &nbsp; Register No: <b>${j.me.RegNo}</b> &nbsp; | &nbsp; Seat: <b>${j.me.Seat}</b>`;
-
     if(j.status!=="success"){
       showPopup(j.message || "No record found for this Register Number on this Date/Session", "No Record");
-      // Hide previous student bar if any
       document.getElementById('studentBar').style.display='none';
+      document.getElementById("resultArea").style.display="none";
       return;
     }
+
+    document.getElementById("resultArea").style.display="block";
 
     const me=j.me || {};
     const hallPlan=j.hallPlan || [];
 
-    // Compute max seat
-    let maxSeat = 25;
+    // Show student & hall info
+    document.getElementById("studentInfo").style.display="block";
+    document.getElementById("studentInfo").innerHTML = `
+      <div class="hall-title">Hall: ${me.Hall}</div>
+      <div><b>Register No:</b> ${me.RegNo}</div>
+      <div><b>Seat No:</b> ${me.Seat}</div>
+    `;
 
-const rows = 5;
-const cols = 5;
+    // Student bar info
+    document.getElementById('studentBar').style.display='flex';
+    document.getElementById('studentDetails').innerText = `Reg: ${me.RegNo} | Seat: ${me.Seat}`;
+    document.getElementById('hallLabel').innerText = `Hall: ${me.Hall}`;
 
-// Snake pattern matrix 1,10,11,20,21...
-const matrix = [];
-let seatNumber = 1;
-for (let c = 0; c < cols; c++) {
-  const colSeats = [];
-  for (let r = 0; r < rows; r++) {
-    colSeats.push(seatNumber++);
-  }
-  if (c % 2 === 1) colSeats.reverse();
-  matrix.push(colSeats);
-}
-
-// Convert to row-major
-const finalMatrix = [];
-for (let r = 0; r < rows; r++) {
-  const rowArr = [];
-  for (let c = 0; c < cols; c++) rowArr.push(matrix[c][r]);
-  finalMatrix.push(rowArr);
-}
-
-const grid = document.getElementById("gridContainer");
-grid.style.gridTemplateColumns = `repeat(5,60px)`;
-grid.innerHTML = "";
-
-for (let r = 0; r < rows; r++) {
-  for (let c = 0; c < cols; c++) {
-    const seatNo = finalMatrix[r][c];
-    const div = document.createElement("div");
-
-    const entry = hallPlan.find(x => Number(x.Seat) === seatNo);
-
-    if (!entry) {
-      div.className = "cell blank";
-      grid.appendChild(div);
-      continue;
+    // Seat matrix (snake pattern)
+    const rows = 5;
+    const cols = 5;
+    const matrix = [];
+    let seatNumber = 1;
+    for (let c = 0; c < cols; c++) {
+      const colSeats = [];
+      for (let r = 0; r < rows; r++) colSeats.push(seatNumber++);
+      if (c % 2 === 1) colSeats.reverse();
+      matrix.push(colSeats);
+    }
+    const finalMatrix = [];
+    for (let r = 0; r < rows; r++) {
+      const rowArr = [];
+      for (let c = 0; c < cols; c++) rowArr.push(matrix[c][r]);
+      finalMatrix.push(rowArr);
     }
 
-    div.className = "cell";
-    div.innerText = seatNo;
+    const grid = document.getElementById("gridContainer");
+    grid.style.gridTemplateColumns = `repeat(${cols}, var(--cell-size))`;
+    grid.innerHTML = "";
 
-    if (me && Number(me.Seat) === seatNo) div.classList.add("me");
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const seatNo = finalMatrix[r][c];
+        const div = document.createElement("div");
 
-    grid.appendChild(div);
-  }
-}
+        // Only allotted seat will be highlighted
+        if(Number(me.Seat) === seatNo){
+          div.className = "cell me";
+          div.innerText = seatNo;
+        } else {
+          div.className = "cell";
+          div.innerText = seatNo;
+        }
 
-// Show motivational message
-document.getElementById("motivateBox").style.display="block";
+        grid.appendChild(div);
+      }
+    }
 
-    // Update seen count on server only once per browser (to avoid accidental double increments)
+    // Motivational message
+    document.getElementById("motivateBox").style.display="block";
+
+    // Update seen count on server only once per browser
     if(!hasIncremented(date, session, reg)){
-      // Send IST formatted timestamp
       const now = new Date();
       const ist = formatToIST(now);
 
       const upd = await updateSeenCount(date, session, reg, ist);
       if(upd && upd.status === 'success'){
         markIncremented(date, session, reg);
-        // update UI with new seen count and last seen if returned
         if(upd.seenCount != null) document.getElementById('seenCountText').innerText = `Seen: ${upd.seenCount}`;
         if(upd.lastSeen) document.getElementById('lastSeenText').innerText = `Last seen: ${upd.lastSeen}`;
       } else {
-        // If update failed, don't treat as fatal — just log. Backend mismatch is possible.
         console.warn('Seen update not acknowledged by server', upd);
       }
     }
@@ -568,6 +559,7 @@ document.getElementById("motivateBox").style.display="block";
     btn.innerText="Check Seating";
   }
 }
+
 
 </script>
 
