@@ -138,7 +138,7 @@ function uploadFile() {
 
 async function deleteRecords(){
   const btn = document.getElementById("deleteBtn");
-  const date = document.getElementById("delDate").value;      // YYYY-MM-DD
+  const date = document.getElementById("delDate").value;
   const session = document.getElementById("delSession").value.trim();
 
   if(!date || !session){
@@ -148,40 +148,35 @@ async function deleteRecords(){
 
   if(!confirm(`Are you sure you want to delete all records for ${date} - ${session}?`)) return;
 
-  // Disable UI while processing
   btn.disabled = true;
   btn.innerText = "Deleting...";
-  showMsg("Processing...", false);
 
   try {
-    // Build GET query (Apps Script doGet) — server expects ?date=YYYY-MM-DD&session=FN
-    const params = new URLSearchParams({ date, session });
-    const resp = await fetch(`${GS_URL}?${params.toString()}`, {
-      method: "GET",
-      headers: { "Accept": "application/json" }
+    const params = new URLSearchParams({
+      action: "deleteHallPlan",
+      date,
+      session
     });
 
-    if(!resp.ok){
-      throw new Error(`Network error: ${resp.status}`);
-    }
+    const resp = await fetch(`${GS_URL}?${params.toString()}`, {
+      method: "GET"
+    });
 
     const json = await resp.json();
 
     if(json.status === "success"){
       showMsg(`Deleted ${json.deleted} rows.`, false);
     } else {
-      showMsg(`Failed: ${json.message || JSON.stringify(json)}`, true);
+      showMsg("Failed: " + json.message, true);
     }
-  } catch (err) {
-    showMsg("Error: " + err.message, true);
-    console.error(err);
-  } finally {
-    btn.disabled = false;
-    btn.innerText = "Delete records";
-  }
-}
 
-document.getElementById("deleteBtn").addEventListener("click", deleteRecords);
+  } catch(err){
+    showMsg("Error: " + err.message, true);
+  }
+
+  btn.disabled = false;
+  btn.innerText = "Delete records";
+}
 
 
 
@@ -190,6 +185,7 @@ document.getElementById("deleteBtn").addEventListener("click", deleteRecords);
 
 </body>
 </html>
+
 
 
 
