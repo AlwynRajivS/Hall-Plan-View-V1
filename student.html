@@ -198,21 +198,6 @@ button.ghost:hover{
   box-shadow:none;
 }
 
-/* Student bar */
-.student-bar{
-  display:flex;
-  gap:12px;
-  align-items:center;
-  justify-content:space-between;
-  margin-top:16px;
-  padding:12px 16px;
-  border-radius:12px;
-  background:linear-gradient(90deg, rgba(11,99,214,0.05), rgba(11,99,214,0.02));
-  animation:fadeInUp 0.5s ease-out;
-}
-.student-info{font-weight:700}
-.hall-label{font-weight:800;color:var(--accent)}
-
 /* Motivational Message */
 .motivate-box{
   margin-top:20px;
@@ -326,12 +311,25 @@ button.ghost:hover{
 /* Responsive */
 @media(max-width:768px){
   .form-grid{flex-direction:column;}
-  .cell{width:48px;height:38px;font-size:0.95rem;}
+  .cell{
+    width:40px;
+    height:32px;
+    font-size:0.85rem;
+  }
 }
+
 @media(max-width:480px){
   header h1{font-size:1.1rem;}
   .student-card{font-size:0.95rem;padding:14px;}
   .motivate-box{font-size:0.95rem;padding:14px;}
+  .cell{
+    width:32px;
+    height:28px;
+    font-size:0.75rem;
+  }
+  .grid-wrap{
+    padding:8px;
+  }
 }
 </style>
 </head>
@@ -365,17 +363,10 @@ button.ghost:hover{
       <div class="notice">Read instructions before viewing.</div>
     </div>
 
+    <!-- Only one student info card -->
     <div id="studentInfo" class="student-card" style="display:none;"></div>
-    <div id="resultArea" style="display:none;margin-top:16px">
-       <div class="student-bar" style="display:none;" id="studentBar">
-        <div>
-          <div class="student-info" id="studentDetails">Reg: — &nbsp; Seat: —</div>
-        </div>
-        <div style="text-align:right">
-          <div class="hall-label" id="hallLabel">Hall: —</div>
-        </div>
-      </div>
 
+    <div id="resultArea" style="display:none;margin-top:16px">
       <div class="hall-wrap">
         <div class="grid-wrap card" style="padding:12px;">
           <div id="gridContainer" class="grid"></div>
@@ -417,7 +408,6 @@ button.ghost:hover{
   </div>
 </div>
 
-<!-- JS Logic remains the same -->
 <script>
 const GS_URL = "https://script.google.com/macros/s/AKfycbxD-gGXwodZw5JyueD8h8Ic5nHVh-yAE-FRJW2kB75foEq2Fc0QXo8bv6JzQCVMe4X0/exec";
 
@@ -448,10 +438,7 @@ function proceedToView(){
   viewHallPlan();
 }
 
-// Helper: format given Date object to IST dd/mm/yyyy hh:mm:ss AM/PM
 function formatToIST(dateObj){
-  // Convert dateObj (local or UTC) to timestamp and add IST offset
-  // We'll use UTC then add +5:30
   const utc = dateObj.getTime() + (dateObj.getTimezoneOffset() * 60000);
   const istOffset = 5.5 * 60 * 60000;
   const ist = new Date(utc + istOffset);
@@ -471,7 +458,6 @@ function formatToIST(dateObj){
   return `${dd}/${mm}/${yyyy}, ${hh}:${minutes}:${seconds} ${ampm}`;
 }
 
-// Prevent double increment: localStorage key per date|session|reg
 function hasIncremented(date, session, reg){
   const key = `viewed__${date}__${session}__${reg}`;
   return localStorage.getItem(key) === '1';
@@ -482,8 +468,6 @@ function markIncremented(date, session, reg){
 }
 
 async function updateSeenCount(date, session, reg, lastSeenIST){
-  // Try to call backend action to update seen count. Backend should implement 'updateSeen' action.
-  // If backend uses a different action name, adapt server-side. We include fallbacks in error handling.
   try{
     const params = new URLSearchParams({action:'updateSeen', date:date, session:session, regno:reg, lastSeen: lastSeenIST});
     const res = await fetch(`${GS_URL}?${params.toString()}`);
@@ -505,7 +489,6 @@ async function viewHallPlan(){
   btn.innerText='Checking...';
 
   try{
-    // Request hall plan
     const res = await fetch(`${GS_URL}?action=viewHallPlan&date=${encodeURIComponent(date)}&session=${encodeURIComponent(session)}&regno=${encodeURIComponent(reg)}`);
     const j = await res.json();
 
@@ -514,7 +497,6 @@ async function viewHallPlan(){
 
     if(j.status!=="success"){
       showPopup(j.message || "No record found for this Register Number on this Date/Session", "No Record");
-      document.getElementById('studentBar').style.display='none';
       document.getElementById("resultArea").style.display="none";
       return;
     }
@@ -524,18 +506,12 @@ async function viewHallPlan(){
     const me=j.me || {};
     const hallPlan=j.hallPlan || [];
 
-    // Show student & hall info
     document.getElementById("studentInfo").style.display="block";
     document.getElementById("studentInfo").innerHTML = `
       <div class="hall-title">Hall: ${me.Hall}</div>
       <div><b>Register No:</b> ${me.RegNo}</div>
       <div><b>Seat No:</b> ${me.Seat}</div>
     `;
-
-    // Student bar info
-    document.getElementById('studentBar').style.display='flex';
-    document.getElementById('studentDetails').innerText = `Reg: ${me.RegNo} | Seat: ${me.Seat}`;
-    document.getElementById('hallLabel').innerText = `Hall: ${me.Hall}`;
 
     // Seat matrix (snake pattern)
     const rows = 5;
@@ -564,7 +540,6 @@ async function viewHallPlan(){
         const seatNo = finalMatrix[r][c];
         const div = document.createElement("div");
 
-        // Only allotted seat will be highlighted
         if(Number(me.Seat) === seatNo){
           div.className = "cell me";
           div.innerText = seatNo;
@@ -577,33 +552,22 @@ async function viewHallPlan(){
       }
     }
 
-    // Motivational message
     document.getElementById("motivateBox").style.display="block";
 
-    // Update seen count on server only once per browser
     if(!hasIncremented(date, session, reg)){
       const now = new Date();
       const ist = formatToIST(now);
-
       const upd = await updateSeenCount(date, session, reg, ist);
-      if(upd && upd.status === 'success'){
-        markIncremented(date, session, reg);
-        if(upd.seenCount != null) document.getElementById('seenCountText').innerText = `Seen: ${upd.seenCount}`;
-        if(upd.lastSeen) document.getElementById('lastSeenText').innerText = `Last seen: ${upd.lastSeen}`;
-      } else {
-        console.warn('Seen update not acknowledged by server', upd);
-      }
+      if(upd && upd.status==='success') markIncremented(date, session, reg);
     }
 
-  } 
-  catch(e){
+  } catch(e){
     console.error(e);
-    showPopup("Network error. Please check your connection and try again.", "Connection Issue");
     btn.disabled=false;
-    btn.innerText="Check Seating";
+    btn.innerText='Check Seating';
+    showPopup("Failed to fetch hall plan. Check your internet or try later.", "Error");
   }
 }
-
 </script>
 </body>
 </html>
