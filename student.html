@@ -12,8 +12,6 @@
     --card:#ffffff;
     --muted:#64748b;
     --bg:#f7fbff;
-    --success:#16a34a;
-    --danger:#dc3545;
   }
 
   *{box-sizing:border-box}
@@ -24,11 +22,7 @@
     color:#0f172a;
   }
 
-  .container{
-    max-width:960px;
-    margin:18px auto;
-    padding:18px;
-  }
+  .container{max-width:960px;margin:18px auto;padding:18px;}
 
   .card{
     background:var(--card);
@@ -45,27 +39,12 @@
     margin-bottom:12px;
   }
 
-  header h1{
-    font-size:1.15rem;
-    margin:0;
-  }
+  header h1{font-size:1.15rem;margin:0;}
 
-  .form-grid{
-    display:flex;
-    gap:12px;
-    flex-wrap:wrap;
-  }
-  .form-grid > *{
-    flex:1;
-    min-width:160px;
-  }
+  .form-grid{display:flex;gap:12px;flex-wrap:wrap;}
+  .form-grid > *{flex:1;min-width:160px;}
 
-  label{
-    font-weight:600;
-    font-size:0.95rem;
-    margin-bottom:6px;
-    display:block;
-  }
+  label{font-weight:600;font-size:0.95rem;margin-bottom:6px;display:block;}
 
   input[type=date], input[type=text], select{
     width:100%;
@@ -84,62 +63,29 @@
     font-weight:600;
   }
 
-  button.ghost{
-    background:transparent;
-    border:1px solid #cbd5e1;
-    padding:10px 14px;
-    border-radius:10px;
-    cursor:pointer;
-  }
-
   .notice{
     color:var(--muted);
     margin-top:8px;
     font-size:0.95rem;
   }
 
-  /* modal */
-  .modal-backdrop{
-    position:fixed;
-    inset:0;
-    background:rgba(2,6,23,0.45);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    z-index:40;
-  }
-
-  .modal{
-    width:92%;
-    max-width:700px;
-    background:white;
-    border-radius:12px;
-    padding:18px;
-    box-shadow:0 20px 50px rgba(2,6,23,0.2)
-  }
-
-  .hall-wrap{
-    display:flex;
-    gap:18px;
-    align-items:flex-start;
-    flex-wrap:wrap;
-    margin-top:12px
-  }
-
+  /* grid */
   .grid-wrap{
     flex:1;
     min-width:260px;
-    overflow:auto
+    overflow:auto;
+    margin-top:12px;
+    background:white;
+    padding:14px;
+    border-radius:12px;
   }
 
   .grid{
     display:grid;
     gap:8px;
     justify-content:center;
-    align-items:center
   }
 
-  /* Seat cells */
   .cell{
     width:60px;
     height:48px;
@@ -149,7 +95,7 @@
     justify-content:center;
     font-weight:700;
     background:#e2e8f0;
-    color:#0f172a
+    color:#0f172a;
   }
 
   .cell.me{
@@ -160,17 +106,15 @@
     font-size:1.05rem;
   }
 
-  .cell.blank{
-    background:transparent;
-    color:transparent;
-    box-shadow:none;
+  /* Hall No */
+  .hall-info{
+    margin-top:14px;
+    font-size:1.05rem;
+    font-weight:700;
+    color:#0b63d6;
   }
 
-  @media(max-width:640px){
-    .cell{width:44px;height:40px;font-size:0.95rem}
-  }
-
-  /* Motivational message */
+  /* motivational box */
   .motivate-box{
     margin-top:20px;
     padding:14px;
@@ -186,60 +130,8 @@
   }
 
   @keyframes fadeUp{
-    to{
-      opacity:1;
-      transform:translateY(0);
-    }
+    to{opacity:1;transform:translateY(0);}
   }
-
-  #popupOverlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.55);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-}
-
-.popupBox{
-  background:white;
-  padding:20px 24px;
-  border-radius:12px;
-  width:90%;
-  max-width:420px;
-  text-align:center;
-  box-shadow:0 10px 35px rgba(0,0,0,0.25);
-  animation:fadeIn 0.3s ease-out;
-}
-
-.popupBox h3{
-  margin-bottom:10px;
-  font-size:1.3rem;
-  font-weight:700;
-}
-
-.popupBox p{
-  font-size:1rem;
-  margin-bottom:18px;
-  color:#555;
-}
-
-.popupBox button{
-  padding:10px 20px;
-  background:#0b63d6;
-  color:white;
-  border:none;
-  border-radius:8px;
-  font-weight:600;
-  cursor:pointer;
-}
-
-@keyframes fadeIn{
-  from{opacity:0; transform:translateY(10px);}
-  to{opacity:1; transform:translateY(0);}
-}
-
 </style>
 </head>
 
@@ -269,160 +161,109 @@
     </div>
 
     <div style="display:flex;gap:10px;margin-top:12px;align-items:center">
-      <button class="primary" id="viewBtn" onclick="showInstructions()">Check Seating</button>
-      <div class="notice">Read instructions before viewing. Each view increments seen count.</div>
+      <button class="primary" id="viewBtn" onclick="viewHallPlan()">Check Seating</button>
+      <div class="notice">Each view increments seen count.</div>
     </div>
 
-    <!-- Result -->
-    <div id="resultArea" style="display:none;margin-top:16px">
-      <div class="hall-wrap">
-        <div class="grid-wrap card" style="padding:12px;">
-          <div id="gridContainer" class="grid"></div>
-        </div>
+    <!-- Output -->
+    <div id="output" style="display:none;">
+      <div id="hallInfo" class="hall-info"></div>
+      <div class="grid-wrap">
+        <div id="gridContainer" class="grid"></div>
       </div>
-
-      <!-- Motivational Message -->
       <div id="motivateBox" class="motivate-box" style="display:none;">
-        🌟 Stay confident! You are fully prepared — Give your best in the exam! 🌟
+        🌟 Stay confident! Give your best in the exam! 🌟
       </div>
-
     </div>
 
-  </div>
-</div>
-
-<!-- Instructions Modal -->
-<div id="instrModal" class="modal-backdrop">
-  <div class="modal">
-    <h3>Exam Instructions</h3>
-    <ol>
-      <li>Carry your ID card and admit card.</li>
-      <li>Mobile phones are prohibited.</li>
-      <li>Reach 15 minutes early.</li>
-      <li>Follow the invigilator's instructions strictly.</li>
-      <li>Start writing only after permission.</li>
-    </ol>
-
-    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
-      <button class="ghost" onclick="closeInstructions()">Cancel</button>
-      <button class="primary" onclick="proceedToView()">I Agree — Check Seating</button>
-    </div>
-  </div>
-</div>
-
-<!-- Custom Popup -->
-<div id="popupOverlay" style="display:none;">
-  <div class="popupBox">
-    <h3 id="popupTitle">Message</h3>
-    <p id="popupMessage"></p>
-    <button onclick="closePopup()">OK</button>
   </div>
 </div>
 
 <script>
-const GS_URL = "https://script.google.com/macros/s/AKfycbxD-gGXwodZw5JyueD8h8Ic5nHVh-yAE-FRJW2kB75foEq2Fc0QXo8bv6JzQCVMe4X0/exec";
+const GS_URL="https://script.google.com/macros/s/AKfycbxD-gGXwodZw5JyueD8h8Ic5nHVh-yAE-FRJW2kB75foEq2Fc0QXo8bv6JzQCVMe4X0/exec";
 
-function showPopup(message, title="Alert"){
-  document.getElementById("popupTitle").innerText = title;
-  document.getElementById("popupMessage").innerText = message;
-  document.getElementById("popupOverlay").style.display = "flex";
-}
-
-function closePopup(){
-  document.getElementById("popupOverlay").style.display = "none";
-}
-
-function showInstructions(){
-  if(!document.getElementById('date').value || !document.getElementById('regno').value.trim()){
-    showPopup("Please enter date and register number", "Missing Inputs");
-    return;
-  }
-  document.getElementById("instrModal").style.display="flex";
-}
-
-function closeInstructions(){
-  document.getElementById("instrModal").style.display="none";
-}
-
-function proceedToView(){
-  closeInstructions();
-  viewHallPlan();
-}
-
+// Build seat grid EXACTLY as per Sheet (Option A)
 async function viewHallPlan(){
   const date=document.getElementById('date').value;
   const session=document.getElementById('session').value;
   const reg=document.getElementById('regno').value.trim();
 
-  const btn=document.getElementById('viewBtn');
-  btn.disabled=true; 
-  btn.innerText='Checking...';
+  if(!date || !reg){
+    alert("Please enter Date & Register Number.");
+    return;
+  }
+
+  const btn=document.getElementById("viewBtn");
+  btn.disabled=true;
+  btn.innerText="Checking...";
 
   try{
     const res = await fetch(`${GS_URL}?action=viewHallPlan&date=${date}&session=${session}&regno=${reg}`);
     const j = await res.json();
 
-    btn.disabled=false; 
-    btn.innerText='Check Seating';
-    document.getElementById("resultArea").style.display="block";
+    btn.disabled=false;
+    btn.innerText="Check Seating";
 
     if(j.status!=="success"){
-      showPopup(j.message || "No record found for this Register Number on this Date/Session");
+      alert(j.message);
       return;
     }
+
+    document.getElementById("output").style.display="block";
 
     const me=j.me;
     const hallPlan=j.hallPlan;
 
-    let maxSeat=0;
-    hallPlan.forEach(x=>{
-      const s=Number(x.Seat);
-      if(!isNaN(s)&&s>maxSeat) maxSeat=s;
-    });
+    // show hall number
+    document.getElementById("hallInfo").innerHTML = `Hall No.: <b>${me.Hall}</b>`;
 
-    const rows=5;
-    const cols=Math.ceil(maxSeat/rows);
+    // extract all seat numbers from sheet
+    let seats = hallPlan.map(x=>Number(x.Seat)).sort((a,b)=>a-b);
 
-    // Build Snake Pattern
-    const matrix=Array.from({length:rows},()=>Array(cols).fill(null));
-    let count=1;
-    for(let c=0;c<cols;c++){
-      if(c%2===0){
-        for(let r=0;r<rows;r++) matrix[r][c]=count++;
-      } else {
-        for(let r=rows-1;r>=0;r--) matrix[r][c]=count++;
-      }
-    }
+    // define rows and columns dynamically
+    const rows = 5;
+    const cols = Math.ceil(seats.length / rows);
 
-    const grid=document.getElementById("gridContainer");
-    grid.style.gridTemplateColumns=`repeat(${cols},60px)`;
-    grid.innerHTML="";
+    // create a matrix for non-continuous seats (Option A)
+    const matrix = [];
+    let index = 0;
 
     for(let r=0;r<rows;r++){
+      const row = [];
       for(let c=0;c<cols;c++){
-        const seatNo=matrix[r][c];
-        const div=document.createElement("div");
+        row.push(seats[index] !== undefined ? seats[index] : null);
+        index++;
+      }
+      matrix.push(row);
+    }
 
-        if(seatNo>maxSeat){
+    // build HTML grid
+    const grid = document.getElementById("gridContainer");
+    grid.style.gridTemplateColumns = `repeat(${cols},60px)`;
+    grid.innerHTML = "";
+
+    matrix.forEach(row=>{
+      row.forEach(seat=>{
+        const div=document.createElement("div");
+        if(seat===null){
           div.className="cell blank";
+          div.textContent="";
         } else {
           div.className="cell";
-          div.textContent=seatNo;
+          div.textContent=seat;
 
-          if(String(seatNo)===String(me.Seat)){
+          if(String(seat)===String(me.Seat)){
             div.classList.add("me");
           }
         }
         grid.appendChild(div);
-      }
-    }
+      });
+    });
 
-    // Show motivational message
     document.getElementById("motivateBox").style.display="block";
 
-  } 
-  catch(e){
-    showPopup("Network error. Please check your connection and try again.", "Connection Issue");
+  } catch(err){
+    alert("Network error, try again.");
     btn.disabled=false;
     btn.innerText="Check Seating";
   }
