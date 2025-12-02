@@ -456,72 +456,59 @@ async function viewHallPlan(){
     const hallPlan=j.hallPlan || [];
 
     // Compute max seat
-    let maxSeat=0;
-    hallPlan.forEach(x=>{
-      const s=Number(x.Seat);
-      if(!isNaN(s)&&s>maxSeat) maxSeat=s;
-    });
+    let maxSeat = 25;
 
-    // Default rows to 5 to match snake pattern like: 1 10 11 20 21
-    const rows=5;
-    const cols=Math.ceil(maxSeat/rows) || 1;
+const rows = 5;
+const cols = 5;
 
-    // Build Snake Pattern (column-major snake)
-    const matrix=Array.from({length:rows},()=>Array(cols).fill(null));
-    let count=1;
-    for(let c=0;c<cols;c++){
-      if(c%2===0){
-        for(let r=0;r<rows;r++) matrix[r][c]=count++;
-      } else {
-        for(let r=rows-1;r>=0;r--) matrix[r][c]=count++;
-      }
+// Snake pattern matrix 1,10,11,20,21...
+const matrix = [];
+let seatNumber = 1;
+for (let c = 0; c < cols; c++) {
+  const colSeats = [];
+  for (let r = 0; r < rows; r++) {
+    colSeats.push(seatNumber++);
+  }
+  if (c % 2 === 1) colSeats.reverse();
+  matrix.push(colSeats);
+}
+
+// Convert to row-major
+const finalMatrix = [];
+for (let r = 0; r < rows; r++) {
+  const rowArr = [];
+  for (let c = 0; c < cols; c++) rowArr.push(matrix[c][r]);
+  finalMatrix.push(rowArr);
+}
+
+const grid = document.getElementById("gridContainer");
+grid.style.gridTemplateColumns = `repeat(5,60px)`;
+grid.innerHTML = "";
+
+for (let r = 0; r < rows; r++) {
+  for (let c = 0; c < cols; c++) {
+    const seatNo = finalMatrix[r][c];
+    const div = document.createElement("div");
+
+    const entry = hallPlan.find(x => Number(x.Seat) === seatNo);
+
+    if (!entry) {
+      div.className = "cell blank";
+      grid.appendChild(div);
+      continue;
     }
 
-    const grid=document.getElementById("gridContainer");
+    div.className = "cell";
+    div.innerText = seatNo;
 
-    // Responsive cell sizing: compute based on available width but clamp sizes
-    const gridWrap = document.querySelector('.grid-wrap');
-    const availableWidth = Math.min(gridWrap.clientWidth - 24, window.innerWidth - 64);
-    const cellSize = Math.max(40, Math.min(70, Math.floor((availableWidth - (cols-1)*8) / cols)));
-    document.documentElement.style.setProperty('--cell-size', cellSize + 'px');
+    if (me && Number(me.Seat) === seatNo) div.classList.add("me");
 
-    grid.style.gridTemplateColumns=`repeat(${cols}, ${cellSize}px)`;
-    grid.innerHTML="";
+    grid.appendChild(div);
+  }
+}
 
-    for(let r=0;r<rows;r++){
-      for(let c=0;c<cols;c++){
-        const seatNo=matrix[r][c];
-        const div=document.createElement("div");
-
-        if(seatNo>maxSeat){
-          div.className="cell blank";
-          div.textContent='';
-        } else {
-          div.className="cell";
-          div.textContent=seatNo;
-
-          if(String(seatNo)===String(me.Seat)){
-            div.classList.add("me");
-          }
-        }
-        grid.appendChild(div);
-      }
-    }
-
-    // Show student details & hall label & seen count
-    const studentBar = document.getElementById('studentBar');
-    document.getElementById('studentDetails').innerText = `Reg: ${reg || (me.RegNo||'—')}  •  Seat: ${me.Seat || '—'}`;
-    document.getElementById('hallLabel').innerText = `Hall: ${j.hallNo || me.Hall || '—'}`;
-    document.getElementById('seenCountText').innerText = `Seen: ${j.seenCount!=null? j.seenCount : (me.SeenCount!=null? me.SeenCount:'—')}`;
-
-    // Last seen from server if provided, otherwise show local last seen field
-    const lastSeenText = j.lastSeen || me.LastSeen || '—';
-    document.getElementById('lastSeenText').innerText = `Last seen: ${lastSeenText}`;
-
-    studentBar.style.display='flex';
-
-    // Show motivational message
-    document.getElementById("motivateBox").style.display="block";
+// Show motivational message
+document.getElementById("motivateBox").style.display="block";
 
     // Update seen count on server only once per browser (to avoid accidental double increments)
     if(!hasIncremented(date, session, reg)){
