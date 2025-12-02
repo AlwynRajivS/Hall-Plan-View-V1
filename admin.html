@@ -72,42 +72,31 @@ const GS_URL = "https://script.google.com/macros/s/AKfycbzLGgqy0VJHSsliL7nR5hITx
 
 // ===================== DOWNLOAD TEMPLATE =====================
 function downloadTemplate() {
-  const dateInput = document.getElementById("tplDate").value;
+  const date = document.getElementById("tplDate").value;
   const session = document.getElementById("tplSession").value;
   const count = document.getElementById("tplCount").value;
 
-  if(!dateInput || !session || !count) {
+  if(!date || !session || !count) {
     alert("Please fill all fields");
     return;
   }
 
-  // dateInput is already yyyy-mm-dd from <input type="date">
-  const formattedDate = dateInput; // ✔ Already correct
-
-  fetch(`${GS_URL}?action=getTemplate&date=${dateInput}&session=${session}&count=${count}`)
+  fetch(`${GS_URL}?action=getTemplate&date=${date}&session=${session}&count=${count}`)
     .then(res => res.json())
     .then(data => {
       if(data.status === "success") {
+        // Convert JSON rows to CSV
         const csv = data.template.map(r => r.join(",")).join("\n");
         const blob = new Blob([csv], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
-
         const a = document.createElement('a');
         a.href = url;
-        a.download = `Template_${formattedDate}_${session}.csv`;
+        a.download = `Template_${date}_${session}.csv`;
         a.click();
-
         document.getElementById("tplStatus").innerText = "Template downloaded!";
-      } else {
-        document.getElementById("tplStatus").innerText = "Failed to fetch template";
       }
-    })
-    .catch(err => {
-      console.error(err);
-      document.getElementById("tplStatus").innerText = "Error downloading template";
     });
 }
-
 
 // ===================== UPLOAD FILE =====================
 function uploadFile() {
@@ -159,6 +148,7 @@ function deleteRecords() {
 
 </body>
 </html>
+
 
 
 
