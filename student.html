@@ -175,6 +175,8 @@ button.ghost:hover{
   align-items:center;
   transition:all 0.3s ease;
   grid-auto-flow:row; /* ensure proper flow */
+  grid-template-columns: repeat(auto-fit, minmax(var(--cell-size), 1fr));
+}
 }
 
 /* Seats */
@@ -327,7 +329,7 @@ button.ghost:hover{
     column-gap: 2px;
     row-gap: 3px;
   }
-  grid-wrap{overflow-x:auto;}
+  .grid-wrap{overflow-x:auto;}
   .cell{
     width:50px;
     height:40px;
@@ -341,8 +343,8 @@ button.ghost:hover{
   .student-card{font-size:0.95rem;padding:14px;}
   .motivate-box{font-size:0.95rem;padding:14px;}
   .cell{
-    width:32px;
-    height:28px;
+    width:40px;
+    height:21px;
     font-size:0.75rem;
 }
 .grid {
