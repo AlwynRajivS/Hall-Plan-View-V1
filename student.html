@@ -141,6 +141,30 @@
   }
 
   /* Seat cells */
+
+  /* Hall title box */
+  .hall-title{
+    background:#0b63d6;
+    color:white;
+    padding:10px 14px;
+    border-radius:10px;
+    font-size:1.05rem;
+    font-weight:700;
+    margin-bottom:12px;
+    display:inline-block;
+  }
+
+  /* Student card */
+  .student-card{
+    background:white;
+    border-left:6px solid #0b63d6;
+    padding:14px 16px;
+    border-radius:10px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    margin-bottom:12px;
+    font-size:1rem;
+    color:#0f172a;
+  }
   .cell{
     width:var(--cell-size);
     height:calc(var(--cell-size) * 0.8);
@@ -292,7 +316,7 @@
     </div>
 
     <!-- Result -->
-    <div id="studentInfo" style="display:none;margin-top:12px;font-weight:600;font-size:1rem;color:#0b63d6"></div>
+    <div id="studentInfo" class="student-card" style="display:none;"></div>
     <div id="resultArea" style="display:none;margin-top:16px">
 
       <div class="student-bar" style="display:none;" id="studentBar">
@@ -447,8 +471,11 @@ async function viewHallPlan(){
     document.getElementById("resultArea").style.display="block";
 
     // Show student & hall info
-    document.getElementById("studentInfo").style.display = "block";
-    document.getElementById("studentInfo").innerHTML = `Hall: <b>${j.me.Hall}</b> &nbsp; | &nbsp; Register No: <b>${j.me.RegNo}</b> &nbsp; | &nbsp; Seat: <b>${j.me.Seat}</b>`;
+    document.getElementById("studentInfo").innerHTML = `
+      <div class="hall-title">Hall: ${j.me.Hall}</div><br>
+      <b>Register No:</b> ${j.me.RegNo}<br>
+      <b>Seat No:</b> ${j.me.Seat}
+    `;document.getElementById("studentInfo").innerHTML = `Hall: <b>${j.me.Hall}</b> &nbsp; | &nbsp; Register No: <b>${j.me.RegNo}</b> &nbsp; | &nbsp; Seat: <b>${j.me.Seat}</b>`;
 
     if(j.status!=="success"){
       showPopup(j.message || "No record found for this Register Number on this Date/Session", "No Record");
