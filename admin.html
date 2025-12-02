@@ -136,45 +136,52 @@ function uploadFile() {
 
 // ===================== DELETE RECORDS =====================
 
-function deleteHallPlan(e) {
-  const dateStr = e.parameter.date;     // yyyy-mm-dd
-  const sessionStr = e.parameter.session;
+async function deleteRecords(){
+  const btn = document.getElementById("deleteBtn");
+  const date = document.getElementById("delDate").value;      // YYYY-MM-DD
+  const session = document.getElementById("delSession").value.trim();
 
-  if (!dateStr || !sessionStr) {
-    return jsonResp({ status: "failed", message: "Missing fields" });
+  if(!date || !session){
+    showMsg("Please pick a date and session.", true);
+    return;
   }
 
-  const sh = SPREADSHEET.getSheetByName("HallPlan");
-  const data = sh.getDataRange().getValues();
+  if(!confirm(`Are you sure you want to delete all records for ${date} - ${session}?`)) return;
 
-  let deleted = 0;
+  // Disable UI while processing
+  btn.disabled = true;
+  btn.innerText = "Deleting...";
+  showMsg("Processing...", false);
 
-  // Convert "2025-12-02" to a real JS date object for comparison
-  const targetDateObj = new Date(dateStr);
+  try {
+    // Build GET query (Apps Script doGet) — server expects ?date=YYYY-MM-DD&session=FN
+    const params = new URLSearchParams({ date, session });
+    const resp = await fetch(`${GS_URL}?${params.toString()}`, {
+      method: "GET",
+      headers: { "Accept": "application/json" }
+    });
 
-  // Compare only yyyy-mm-dd
-  const normalize = d => {
-    if (Object.prototype.toString.call(d) === "[object Date]" && !isNaN(d)) {
-      // Date object from spreadsheet
-      return d.toISOString().slice(0, 10);   // yyyy-mm-dd
+    if(!resp.ok){
+      throw new Error(`Network error: ${resp.status}`);
     }
-    // Text date from spreadsheet
-    return String(d).trim();
-  };
 
-  for (let i = data.length - 1; i >= 1; i--) {
+    const json = await resp.json();
 
-    const rowDateNorm = normalize(data[i][0]);
-    const rowSessionNorm = String(data[i][1]).trim();
-
-    if (rowDateNorm === dateStr && rowSessionNorm === sessionStr) {
-      sh.deleteRow(i + 1);
-      deleted++;
+    if(json.status === "success"){
+      showMsg(`Deleted ${json.deleted} rows.`, false);
+    } else {
+      showMsg(`Failed: ${json.message || JSON.stringify(json)}`, true);
     }
+  } catch (err) {
+    showMsg("Error: " + err.message, true);
+    console.error(err);
+  } finally {
+    btn.disabled = false;
+    btn.innerText = "Delete records";
   }
-
-  return jsonResp({ status: "success", deleted: deleted });
 }
+
+document.getElementById("deleteBtn").addEventListener("click", deleteRecords);
 
 
 
@@ -183,5 +190,6 @@ function deleteHallPlan(e) {
 
 </body>
 </html>
+
 
 
