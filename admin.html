@@ -136,55 +136,30 @@ function uploadFile() {
 
 // ===================== DELETE RECORDS =====================
 
-async function deleteRecords(){
-  const btn = document.getElementById("deleteBtn");
+function deleteRecords() {
   const date = document.getElementById("delDate").value;
-  const session = document.getElementById("delSession").value.trim();
+  const session = document.getElementById("delSession").value;
 
-  if(!date || !session){
-    showMsg("Please pick a date and session.", true);
-    return;
-  }
+  if(!date || !session) { alert("Fill date and session"); return; }
 
-  if(!confirm(`Are you sure you want to delete all records for ${date} - ${session}?`)) return;
+  if(!confirm(`Are you sure to delete all records for ${date} - ${session}?`)) return;
 
-  btn.disabled = true;
-  btn.innerText = "Deleting...";
-
-  try {
-    const params = new URLSearchParams({
-      action: "deleteHallPlan",
-      date,
-      session
+  fetch(`${GS_URL}?action=deleteHallPlan&date=${date}&session=${session}`)
+    .then(res => res.json())
+    .then(data => {
+      if(data.status === "success") {
+        document.getElementById("delStatus").innerText = `Deleted ${data.deleted} records`;
+      } else {
+        document.getElementById("delStatus").innerText = `Error: ${data.message}`;
+      }
     });
-
-    const resp = await fetch(`${GS_URL}?${params.toString()}`, {
-      method: "GET"
-    });
-
-    const json = await resp.json();
-
-    if(json.status === "success"){
-      showMsg(`Deleted ${json.deleted} rows.`, false);
-    } else {
-      showMsg("Failed: " + json.message, true);
-    }
-
-  } catch(err){
-    showMsg("Error: " + err.message, true);
-  }
-
-  btn.disabled = false;
-  btn.innerText = "Delete records";
 }
-
-
-
 
 </script>
 
 </body>
 </html>
+
 
 
 
