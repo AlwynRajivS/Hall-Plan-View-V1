@@ -81,22 +81,22 @@ function downloadTemplate() {
     return;
   }
 
-  // Convert yyyy-mm-dd to mm/dd/yyyy
-  const dateParts = dateInput.split("-");
-  const formattedDate = `${dateParts[0]}/${dateParts[1]}/${dateParts[2]}`;
+  // dateInput is already yyyy-mm-dd from <input type="date">
+  const formattedDate = dateInput; // ✔ Already correct
 
   fetch(`${GS_URL}?action=getTemplate&date=${dateInput}&session=${session}&count=${count}`)
     .then(res => res.json())
     .then(data => {
       if(data.status === "success") {
-        // Convert JSON rows to CSV
         const csv = data.template.map(r => r.join(",")).join("\n");
         const blob = new Blob([csv], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
+
         const a = document.createElement('a');
         a.href = url;
-        a.download = `Template_${formattedDate}_${session}.csv`; // Use formatted date
+        a.download = `Template_${formattedDate}_${session}.csv`;
         a.click();
+
         document.getElementById("tplStatus").innerText = "Template downloaded!";
       } else {
         document.getElementById("tplStatus").innerText = "Failed to fetch template";
@@ -159,6 +159,7 @@ function deleteRecords() {
 
 </body>
 </html>
+
 
 
 
