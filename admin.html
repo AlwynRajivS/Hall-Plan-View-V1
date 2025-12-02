@@ -72,16 +72,20 @@ const GS_URL = "https://script.google.com/macros/s/AKfycbytUD8I31UdapA5sBmWGP02o
 
 // ===================== DOWNLOAD TEMPLATE =====================
 function downloadTemplate() {
-  const date = document.getElementById("tplDate").value;
+  const dateInput = document.getElementById("tplDate").value;
   const session = document.getElementById("tplSession").value;
   const count = document.getElementById("tplCount").value;
 
-  if(!date || !session || !count) {
+  if(!dateInput || !session || !count) {
     alert("Please fill all fields");
     return;
   }
 
-  fetch(`${GS_URL}?action=getTemplate&date=${date}&session=${session}&count=${count}`)
+  // Convert yyyy-mm-dd to mm/dd/yyyy
+  const dateParts = dateInput.split("-");
+  const formattedDate = `${dateParts[1]}/${dateParts[2]}/${dateParts[0]}`;
+
+  fetch(`${GS_URL}?action=getTemplate&date=${dateInput}&session=${session}&count=${count}`)
     .then(res => res.json())
     .then(data => {
       if(data.status === "success") {
@@ -91,12 +95,19 @@ function downloadTemplate() {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `Template_${date}_${session}.csv`;
+        a.download = `Template_${formattedDate}_${session}.csv`; // Use formatted date
         a.click();
         document.getElementById("tplStatus").innerText = "Template downloaded!";
+      } else {
+        document.getElementById("tplStatus").innerText = "Failed to fetch template";
       }
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById("tplStatus").innerText = "Error downloading template";
     });
 }
+
 
 // ===================== UPLOAD FILE =====================
 function uploadFile() {
