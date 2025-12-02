@@ -68,7 +68,7 @@
 </div>
 
 <script>
-const GS_URL = "https://script.google.com/macros/s/AKfycbzLGgqy0VJHSsliL7nR5hITxYFZuC7acsqsdcbxRNmHdN3PKSOf5MpH39WVnXmMbTJT/exec";  // Your Apps Script Web App URL
+const GS_URL = "https://script.google.com/macros/s/AKfycbzPsxpD6Df2xFDxV3UoIUXbg21FEiKWjdtxK9odiBO0m9G4TLWDYDFv25Xj7S5a09MD/exec";  // Your Apps Script Web App URL
 
 // ===================== DOWNLOAD TEMPLATE =====================
 function downloadTemplate() {
@@ -80,6 +80,9 @@ function downloadTemplate() {
     alert("Please fill all fields");
     return;
   }
+
+ const [yyyy, mm, dd] = dateInput.split("-");
+  const formattedDate = `${mm}-${dd}-${yyyy}`;
 
   fetch(`${GS_URL}?action=getTemplate&date=${date}&session=${session}&count=${count}`)
     .then(res => res.json())
@@ -148,6 +151,7 @@ function deleteRecords() {
 
 </body>
 </html>
+
 
 
 
