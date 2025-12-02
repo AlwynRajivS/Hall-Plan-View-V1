@@ -135,32 +135,32 @@ function uploadFile() {
 }
 
 // ===================== DELETE RECORDS =====================
-function deleteRecords() {
-  const dateInput = document.getElementById("delDate").value; // yyyy-mm-dd
-  const session = document.getElementById("delSession").value;
 
-  if(!dateInput || !session) {
-    alert("Fill date and session");
-    return;
+function deleteHallPlan(e) {
+  const date = e.parameter.date;        // already yyyy-mm-dd
+  const session = e.parameter.session;
+
+  if(!date || !session) {
+    return jsonResp({ status: "failed", message: "Missing fields" });
   }
 
-  // Convert yyyy-mm-dd → mm/dd/yyyy for user display
-  const parts = dateInput.split("-");
-  const formattedDate = `${parts[1]}/${parts[2]}/${parts[0]}`;
+  const sh = SPREADSHEET.getSheetByName("HallPlan");
+  const data = sh.getDataRange().getValues();
 
-  if(!confirm(`Are you sure to delete all records for ${formattedDate} - ${session}?`))
-    return;
+  let deleted = 0;
 
-  // Send yyyy-mm-dd to Google Script
-  fetch(`${GS_URL}?action=deleteHallPlan&date=${dateInput}&session=${session}`)
-    .then(res => res.json())
-    .then(data => {
-      if(data.status === "success") {
-        document.getElementById("delStatus").innerText = `Deleted ${data.deleted} records`;
-      } else {
-        document.getElementById("delStatus").innerText = `Error: ${data.message}`;
-      }
-    });
+  // Loop bottom → top to avoid skipping rows
+  for (let i = data.length - 1; i >= 1; i--) {
+    const rowDate = String(data[i][0]).trim();
+    const rowSession = String(data[i][1]).trim();
+
+    if (rowDate === date && rowSession === session) {
+      sh.deleteRow(i + 1);
+      deleted++;
+    }
+  }
+
+  return jsonResp({ status: "success", deleted: deleted });
 }
 
 
