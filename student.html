@@ -459,22 +459,22 @@ async function updateSeenCount(date, session, reg, lastSeenIST){
 }
 
 async function viewHallPlan(){
-  const date = document.getElementById('date').value;
-  const session = document.getElementById('session').value;
-  const reg = document.getElementById('regno').value.trim();
+  const date=document.getElementById('date').value;
+  const session=document.getElementById('session').value;
+  const reg=document.getElementById('regno').value.trim();
 
-  const btn = document.getElementById('viewBtn');
-  btn.disabled = true; 
-  btn.innerText = 'Checking...';
+  const btn=document.getElementById('viewBtn');
+  btn.disabled=true; 
+  btn.innerText='Checking...';
 
   try{
     const res = await fetch(`${GS_URL}?action=viewHallPlan&date=${encodeURIComponent(date)}&session=${encodeURIComponent(session)}&regno=${encodeURIComponent(reg)}`);
     const j = await res.json();
 
-    btn.disabled = false; 
-    btn.innerText = 'Check Seating';
+    btn.disabled=false; 
+    btn.innerText='Check Seating';
 
-    if(j.status !== "success"){
+    if(j.status!=="success"){
       showPopup(j.message || "No record found for this Register Number on this Date/Session", "No Record");
       document.getElementById("resultArea").style.display="none";
       return;
@@ -482,13 +482,8 @@ async function viewHallPlan(){
 
     document.getElementById("resultArea").style.display="block";
 
-    const me = j.me || {};
-    const hallPlan = j.hallPlan || [];
-    const totalSeats = hallPlan.length || 0;
-
-    if(me.SeenCount && Number(me.SeenCount) > 25){
-      showPopup(`Notice: Your seat has been viewed ${me.SeenCount} times`, "High Views");
-    }
+    const me=j.me || {};
+    const hallPlan=j.hallPlan || [];
 
     document.getElementById("studentInfo").style.display="block";
     document.getElementById("studentInfo").innerHTML = `
@@ -497,39 +492,43 @@ async function viewHallPlan(){
       <div><b>Seat No:</b> ${me.Seat}</div>
     `;
 
-    // Dynamic grid
-    const cols = 10; // number of columns (adjust as needed)
-    const rows = Math.ceil(totalSeats / cols);
+    // Seat matrix (snake pattern)
+    const rows = 5;
+    const cols = 5;
+    const matrix = [];
+    let seatNumber = 1;
+    for (let c = 0; c < cols; c++) {
+      const colSeats = [];
+      for (let r = 0; r < rows; r++) colSeats.push(seatNumber++);
+      if (c % 2 === 1) colSeats.reverse();
+      matrix.push(colSeats);
+    }
+    const finalMatrix = [];
+    for (let r = 0; r < rows; r++) {
+      const rowArr = [];
+      for (let c = 0; c < cols; c++) rowArr.push(matrix[c][r]);
+      finalMatrix.push(rowArr);
+    }
+
     const grid = document.getElementById("gridContainer");
     grid.style.gridTemplateColumns = `repeat(${cols}, var(--cell-size))`;
     grid.innerHTML = "";
 
-    let seatNumber = 1;
-    for(let r = 0; r < rows; r++){
-      const rowSeats = [];
-      for(let c = 0; c < cols; c++){
-        if(seatNumber <= totalSeats){
-          rowSeats.push(seatNumber++);
-        } else {
-          rowSeats.push(""); // blank cell
-        }
-      }
-      // Snake pattern: reverse every odd row
-      if(r % 2 === 1) rowSeats.reverse();
-
-      rowSeats.forEach(seatNo => {
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const seatNo = finalMatrix[r][c];
         const div = document.createElement("div");
-        if(seatNo === ""){
-          div.className = "cell blank";
-        } else if(Number(me.Seat) === seatNo){
+
+        if(Number(me.Seat) === seatNo){
           div.className = "cell me";
           div.innerText = seatNo;
         } else {
           div.className = "cell";
           div.innerText = seatNo;
         }
+
         grid.appendChild(div);
-      });
+      }
     }
 
     document.getElementById("motivateBox").style.display="block";
@@ -538,13 +537,13 @@ async function viewHallPlan(){
       const now = new Date();
       const ist = formatToIST(now);
       const upd = await updateSeenCount(date, session, reg, ist);
-      if(upd && upd.status === 'success') markIncremented(date, session, reg);
+      if(upd && upd.status==='success') markIncremented(date, session, reg);
     }
 
   } catch(e){
     console.error(e);
-    btn.disabled = false;
-    btn.innerText = 'Check Seating';
+    btn.disabled=false;
+    btn.innerText='Check Seating';
     showPopup("Failed to fetch hall plan. Check your internet or try later.", "Error");
   }
 }
