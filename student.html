@@ -161,14 +161,18 @@ button.ghost:hover{
 .grid-wrap{
   flex:1;
   min-width:260px;
-  overflow:auto;
+  overflow:auto; /* allow horizontal scroll */
+  padding:8px;   /* prevent left cutoff */
 }
+
+/* Grid */
 .grid{
   display:grid;
   gap:8px;
-  justify-content:center;
+  justify-content:start; /* left-align initially */
   align-items:center;
   transition:all 0.3s ease;
+  grid-auto-flow:row; /* ensure proper flow */
 }
 
 /* Seats */
@@ -184,6 +188,7 @@ button.ghost:hover{
   color:#0f172a;
   box-shadow:0 4px 10px rgba(2,6,23,0.05);
   transition:all var(--transition-speed);
+  flex-shrink:0; /* prevent shrinking in scroll */
 }
 .cell.me{
   background:linear-gradient(180deg,var(--accent),var(--accent-light));
@@ -316,6 +321,12 @@ button.ghost:hover{
     height:32px;
     font-size:0.85rem;
   }
+  grid-wrap{overflow-x:auto;}
+  .cell{
+    width:50px;
+    height:40px;
+    font-size:0.85rem;
+  }
 }
 
 @media(max-width:480px){
@@ -327,9 +338,11 @@ button.ghost:hover{
     height:28px;
     font-size:0.75rem;
   }
-  .grid-wrap{
-    gap:4px;
-    padding:4px;
+   .grid-wrap{overflow-x:auto;}
+  .cell{
+    width:40px;
+    height:32px;
+    font-size:0.75rem;
   }
 }
 </style>
