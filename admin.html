@@ -72,19 +72,20 @@ const GS_URL = "https://script.google.com/macros/s/AKfycbzPsxpD6Df2xFDxV3UoIUXbg
 
 // ===================== DOWNLOAD TEMPLATE =====================
 function downloadTemplate() {
-  const date = document.getElementById("tplDate").value;
-  const session = document.getElementById("tplSession").value;
-  const count = document.getElementById("tplCount").value;
+  const dateInput = document.getElementById("tplDate").value; // yyyy-mm-dd
+  const session = document.getElementById("tplSession").value.trim();
+  const count = document.getElementById("tplCount").value.trim();
 
-  if(!date || !session || !count) {
+  if(!dateInput || !session || !count) {
     alert("Please fill all fields");
     return;
   }
 
- const [yyyy, mm, dd] = dateInput.split("-");
+  // Convert yyyy-mm-dd → mm-dd-yyyy for filename
+  const [yyyy, mm, dd] = dateInput.split("-");
   const formattedDate = `${mm}-${dd}-${yyyy}`;
 
-  fetch(`${GS_URL}?action=getTemplate&date=${date}&session=${session}&count=${count}`)
+  fetch(`${GS_URL}?action=getTemplate&date=${dateInput}&session=${session}&count=${count}`)
     .then(res => res.json())
     .then(data => {
       if(data.status === "success") {
@@ -92,12 +93,22 @@ function downloadTemplate() {
         const csv = data.template.map(r => r.join(",")).join("\n");
         const blob = new Blob([csv], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
+
         const a = document.createElement('a');
         a.href = url;
-        a.download = `Template_${date}_${session}.csv`;
+        a.download = `Template_${formattedDate}_${session}.csv`; // Use formatted date
+        document.body.appendChild(a); // Needed for Firefox
         a.click();
+        a.remove(); // Clean up
+
         document.getElementById("tplStatus").innerText = "Template downloaded!";
+      } else {
+        document.getElementById("tplStatus").innerText = "Failed to fetch template";
       }
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById("tplStatus").innerText = "Error downloading template";
     });
 }
 
@@ -151,6 +162,7 @@ function deleteRecords() {
 
 </body>
 </html>
+
 
 
 
