@@ -486,12 +486,10 @@ async function viewHallPlan(){
     const hallPlan = j.hallPlan || [];
     const totalSeats = hallPlan.length || 0;
 
-    // ⚡ Show SeenCount alert if >25
     if(me.SeenCount && Number(me.SeenCount) > 25){
       showPopup(`Notice: Your seat has been viewed ${me.SeenCount} times`, "High Views");
     }
 
-    // Display student info
     document.getElementById("studentInfo").style.display="block";
     document.getElementById("studentInfo").innerHTML = `
       <div class="hall-title">Hall: ${me.Hall}</div>
@@ -499,39 +497,27 @@ async function viewHallPlan(){
       <div><b>Seat No:</b> ${me.Seat}</div>
     `;
 
-    // Dynamic grid setup
-    const cols = 10; // change as needed
+    // Dynamic grid
+    const cols = 10; // number of columns (adjust as needed)
     const rows = Math.ceil(totalSeats / cols);
-    const matrix = [];
-    let seatNumber = 1;
-
-    for (let c = 0; c < cols; c++) {
-      const colSeats = [];
-      for (let r = 0; r < rows; r++) {
-        if(seatNumber <= totalSeats) colSeats.push(seatNumber++);
-      }
-      if(c % 2 === 1) colSeats.reverse(); // snake pattern
-      matrix.push(colSeats);
-    }
-
-    // Convert column-wise to row-wise
-    const finalMatrix = [];
-    for (let r = 0; r < rows; r++) {
-      const rowArr = [];
-      for (let c = 0; c < cols; c++) {
-        rowArr.push(matrix[c][r] || ""); // blank cells if row shorter
-      }
-      finalMatrix.push(rowArr);
-    }
-
-    // Render grid
     const grid = document.getElementById("gridContainer");
     grid.style.gridTemplateColumns = `repeat(${cols}, var(--cell-size))`;
     grid.innerHTML = "";
 
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const seatNo = finalMatrix[r][c];
+    let seatNumber = 1;
+    for(let r = 0; r < rows; r++){
+      const rowSeats = [];
+      for(let c = 0; c < cols; c++){
+        if(seatNumber <= totalSeats){
+          rowSeats.push(seatNumber++);
+        } else {
+          rowSeats.push(""); // blank cell
+        }
+      }
+      // Snake pattern: reverse every odd row
+      if(r % 2 === 1) rowSeats.reverse();
+
+      rowSeats.forEach(seatNo => {
         const div = document.createElement("div");
         if(seatNo === ""){
           div.className = "cell blank";
@@ -543,12 +529,11 @@ async function viewHallPlan(){
           div.innerText = seatNo;
         }
         grid.appendChild(div);
-      }
+      });
     }
 
     document.getElementById("motivateBox").style.display="block";
 
-    // Update SeenCount only once per session
     if(!hasIncremented(date, session, reg)){
       const now = new Date();
       const ist = formatToIST(now);
