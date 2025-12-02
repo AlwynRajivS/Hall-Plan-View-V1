@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>View Hall Plan — Student</title>
+<title>Exam Hall Plan — Student</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -14,70 +14,46 @@
     --bg:#f7fbff;
   }
 
-  *{box-sizing:border-box}
   body{
     font-family:Inter,system-ui,Segoe UI,Roboto,Arial;
     margin:0;
     background:var(--bg);
-    color:#0f172a;
   }
 
   .container{max-width:960px;margin:18px auto;padding:18px;}
 
   .card{
-    background:var(--card);
+    background:white;
     border-radius:12px;
     padding:18px;
-    box-shadow:0 10px 30px rgba(2,6,23,0.08);
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
   }
 
-  header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    margin-bottom:12px;
-  }
+  label{font-weight:600;margin-bottom:6px;display:block;}
 
-  header h1{font-size:1.15rem;margin:0;}
-
-  .form-grid{display:flex;gap:12px;flex-wrap:wrap;}
-  .form-grid > *{flex:1;min-width:160px;}
-
-  label{font-weight:600;font-size:0.95rem;margin-bottom:6px;display:block;}
-
-  input[type=date], input[type=text], select{
+  input,select{
     width:100%;
     padding:10px;
     border-radius:8px;
-    border:1px solid #e6eef9;
+    border:1px solid #d7e2f1;
   }
 
-  button.primary{
-    background:var(--accent);
-    color:white;
-    padding:10px 14px;
-    border-radius:10px;
+  button{
+    padding:10px 16px;
+    border-radius:8px;
     border:none;
     cursor:pointer;
     font-weight:600;
+    background:var(--accent);
+    color:white;
   }
 
-  .notice{
-    color:var(--muted);
-    margin-top:8px;
-    font-size:0.95rem;
-  }
-
-  /* grid */
   .grid-wrap{
-    flex:1;
-    min-width:260px;
-    overflow:auto;
-    margin-top:12px;
+    margin-top:16px;
     background:white;
     padding:14px;
     border-radius:12px;
+    overflow:auto;
   }
 
   .grid{
@@ -89,90 +65,61 @@
   .cell{
     width:60px;
     height:48px;
+    background:#e2e8f0;
     border-radius:8px;
+    font-weight:700;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-weight:700;
-    background:#e2e8f0;
-    color:#0f172a;
   }
 
-  .cell.me{
-    background:linear-gradient(180deg,var(--accent),#1266d5);
+  .me{
+    background:#0b63d6 !important;
     color:white;
-    box-shadow:0 8px 20px rgba(11,99,214,0.28);
-    transform:scale(1.07);
-    font-size:1.05rem;
+    transform:scale(1.1);
+    font-size:1.1rem;
   }
 
-  /* Hall No */
   .hall-info{
     margin-top:14px;
-    font-size:1.05rem;
     font-weight:700;
     color:#0b63d6;
-  }
-
-  /* motivational box */
-  .motivate-box{
-    margin-top:20px;
-    padding:14px;
-    background:linear-gradient(90deg,#0b63d6,#1d8bf2);
-    color:white;
-    font-weight:700;
-    border-radius:10px;
-    text-align:center;
-    font-size:1.05rem;
-    opacity:0;
-    transform:translateY(10px);
-    animation:fadeUp 0.8s forwards ease-out;
-  }
-
-  @keyframes fadeUp{
-    to{opacity:1;transform:translateY(0);}
   }
 </style>
 </head>
 
 <body>
 <div class="container">
-  <header><h1>Exam Hall — Student View</h1></header>
-
   <div class="card">
-    <div class="form-grid">
-      <div>
-        <label for="date">Date</label>
-        <input id="date" type="date" />
+
+    <h2>Student Hall Plan</h2>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      <div style="flex:1;min-width:160px;">
+        <label>Date</label>
+        <input type="date" id="date">
       </div>
 
-      <div>
-        <label for="session">Session</label>
+      <div style="flex:1;min-width:160px;">
+        <label>Session</label>
         <select id="session">
-          <option value="FN">FN (08:30–10:30)</option>
-          <option value="AN">AN (12:30–14:30)</option>
+          <option value="FN">FN</option>
+          <option value="AN">AN</option>
         </select>
       </div>
 
-      <div>
-        <label for="regno">Register No</label>
-        <input id="regno" type="text" placeholder="Enter Register Number" />
+      <div style="flex:1;min-width:160px;">
+        <label>Register Number</label>
+        <input type="text" id="regno">
       </div>
     </div>
 
-    <div style="display:flex;gap:10px;margin-top:12px;align-items:center">
-      <button class="primary" id="viewBtn" onclick="viewHallPlan()">Check Seating</button>
-      <div class="notice">Each view increments seen count.</div>
-    </div>
+    <button onclick="viewHallPlan()" style="margin-top:12px;">View</button>
 
-    <!-- Output -->
     <div id="output" style="display:none;">
       <div id="hallInfo" class="hall-info"></div>
       <div class="grid-wrap">
         <div id="gridContainer" class="grid"></div>
-      </div>
-      <div id="motivateBox" class="motivate-box" style="display:none;">
-        🌟 Stay confident! Give your best in the exam! 🌟
       </div>
     </div>
 
@@ -180,29 +127,25 @@
 </div>
 
 <script>
-const GS_URL="https://script.google.com/macros/s/AKfycbxD-gGXwodZw5JyueD8h8Ic5nHVh-yAE-FRJW2kB75foEq2Fc0QXo8bv6JzQCVMe4X0/exec";
+const GS_URL = "YOUR_GOOGLE_SCRIPT_URL_HERE";
 
-// Build seat grid EXACTLY as per Sheet (Option A)
+// CHANGE HERE WHEN REQUIRED
+const ROWS = 5;   // Standard 5 rows
+const COLS = 5;   // Standard 5 columns
+
 async function viewHallPlan(){
-  const date=document.getElementById('date').value;
-  const session=document.getElementById('session').value;
-  const reg=document.getElementById('regno').value.trim();
+  const date=document.getElementById("date").value;
+  const session=document.getElementById("session").value;
+  const reg=document.getElementById("regno").value.trim();
 
   if(!date || !reg){
-    alert("Please enter Date & Register Number.");
+    alert("Enter date & register number.");
     return;
   }
-
-  const btn=document.getElementById("viewBtn");
-  btn.disabled=true;
-  btn.innerText="Checking...";
 
   try{
     const res = await fetch(`${GS_URL}?action=viewHallPlan&date=${date}&session=${session}&regno=${reg}`);
     const j = await res.json();
-
-    btn.disabled=false;
-    btn.innerText="Check Seating";
 
     if(j.status!=="success"){
       alert(j.message);
@@ -210,68 +153,47 @@ async function viewHallPlan(){
     }
 
     document.getElementById("output").style.display="block";
-
     const me=j.me;
     const hallPlan=j.hallPlan;
 
-    // show hall number
-    document.getElementById("hallInfo").innerHTML = `Hall No.: <b>${me.Hall}</b>`;
+    document.getElementById("hallInfo").innerHTML = 
+      `Hall No: <b>${me.Hall}</b>`;
 
-    // extract all seat numbers from sheet
-    let seats = hallPlan.map(x=>Number(x.Seat)).sort((a,b)=>a-b);
+    const seats = hallPlan.map(x=>Number(x.Seat)); // preserve exact order
 
-    // define rows and columns dynamically
-    const rows = 5;
-    const cols = Math.ceil(seats.length / rows);
-
-    // create a matrix for non-continuous seats (Option A)
-    // Build snake-pattern matrix (column-wise)
-const matrix = Array.from({ length: rows }, () => Array(cols).fill(null));
-let index = 0;
-
-for (let c = 0; c < cols; c++) {
-  if (c % 2 === 0) {
-    // top → bottom
-    for (let r = 0; r < rows && index < seats.length; r++) {
-      matrix[r][c] = seats[index++];
+    // Determine required rows
+    let requiredRows = ROWS;
+    if(seats.length > ROWS * COLS){
+      requiredRows = Math.ceil(seats.length / COLS);
     }
-  } else {
-    // bottom → top
-    for (let r = rows - 1; r >= 0 && index < seats.length; r--) {
-      matrix[r][c] = seats[index++];
-    }
-  }
-}
 
-    // build HTML grid
+    const matrix = [];
+    let idx = 0;
+
+    for(let r=0;r<requiredRows;r++){
+      matrix[r]=[];
+      for(let c=0;c<COLS;c++){
+        matrix[r][c]= seats[idx] !== undefined ? seats[idx] : null;
+        idx++;
+      }
+    }
+
     const grid = document.getElementById("gridContainer");
-    grid.style.gridTemplateColumns = `repeat(${cols},60px)`;
-    grid.innerHTML = "";
+    grid.style.gridTemplateColumns = `repeat(${COLS},60px)`;
+    grid.innerHTML="";
 
     matrix.forEach(row=>{
       row.forEach(seat=>{
-        const div=document.createElement("div");
-        if(seat===null){
-          div.className="cell blank";
-          div.textContent="";
-        } else {
-          div.className="cell";
-          div.textContent=seat;
-
-          if(String(seat)===String(me.Seat)){
-            div.classList.add("me");
-          }
-        }
-        grid.appendChild(div);
+        const d=document.createElement("div");
+        d.className="cell";
+        if(seat!==null) d.textContent=seat;
+        if(seat==me.Seat) d.classList.add("me");
+        grid.appendChild(d);
       });
     });
 
-    document.getElementById("motivateBox").style.display="block";
-
-  } catch(err){
-    alert("Network error, try again.");
-    btn.disabled=false;
-    btn.innerText="Check Seating";
+  } catch(e){
+    alert("Network Error");
   }
 }
 </script>
