@@ -292,6 +292,7 @@
     </div>
 
     <!-- Result -->
+    <div id="studentInfo" style="display:none;margin-top:12px;font-weight:600;font-size:1rem;color:#0b63d6"></div>
     <div id="resultArea" style="display:none;margin-top:16px">
 
       <div class="student-bar" style="display:none;" id="studentBar">
@@ -444,6 +445,10 @@ async function viewHallPlan(){
     btn.innerText='Check Seating';
 
     document.getElementById("resultArea").style.display="block";
+
+    // Show student & hall info
+    document.getElementById("studentInfo").style.display = "block";
+    document.getElementById("studentInfo").innerHTML = `Hall: <b>${j.me.Hall}</b> &nbsp; | &nbsp; Register No: <b>${j.me.RegNo}</b> &nbsp; | &nbsp; Seat: <b>${j.me.Seat}</b>`;
 
     if(j.status!=="success"){
       showPopup(j.message || "No record found for this Register Number on this Date/Session", "No Record");
