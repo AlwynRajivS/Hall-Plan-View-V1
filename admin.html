@@ -83,7 +83,7 @@ function downloadTemplate() {
 
   // Convert yyyy-mm-dd to mm/dd/yyyy
   const dateParts = dateInput.split("-");
-  const formattedDate = `${dateParts[1]}/${dateParts[2]}/${dateParts[0]}`;
+  const formattedDate = `${dateParts[0]}/${dateParts[1]}/${dateParts[2]}`;
 
   fetch(`${GS_URL}?action=getTemplate&date=${dateInput}&session=${session}&count=${count}`)
     .then(res => res.json())
@@ -159,6 +159,7 @@ function deleteRecords() {
 
 </body>
 </html>
+
 
 
 
