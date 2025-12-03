@@ -115,27 +115,49 @@ function downloadTemplate() {
 // ===================== UPLOAD FILE =====================
 function uploadFile() {
   const file = document.getElementById("uploadFile").files[0];
-  if(!file) { alert("Select a file first"); return; }
+  if (!file) {
+    alert("Select a file first");
+    return;
+  }
 
   const reader = new FileReader();
-  reader.onload = function(e) {
-    let rows = [];
+
+  reader.onload = function (e) {
     const text = e.target.result;
+    let rows = [];
+
     text.split("\n").forEach(line => {
-      if(line.trim() === "") return;
+      if (line.trim() === "") return;
       rows.push(line.split(","));
     });
 
-    fetch(`${GS_URL}?action=uploadHallPlan&data=${encodeURIComponent(JSON.stringify(rows))}`)
-      .then(res => res.json())
-      .then(data => {
-        if(data.status === "success") {
-          document.getElementById("uploadStatus").innerText = "File uploaded successfully!";
-        }
-      });
+    fetch(GS_URL, {
+      method: "POST",
+      contentType: "application/json",
+      body: JSON.stringify({
+        action: "uploadHallPlan",
+        data: rows
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+        document.getElementById("uploadStatus").innerText =
+          `Uploaded ${rows.length} rows successfully!`;
+      } else {
+        document.getElementById("uploadStatus").innerText =
+          "Upload failed";
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Error uploading file");
+    });
   };
+
   reader.readAsText(file);
 }
+
 
 
 // ===================== DELETE RECORDS =====================
@@ -162,6 +184,7 @@ function deleteRecords() {
 
 </body>
 </html>
+
 
 
 
