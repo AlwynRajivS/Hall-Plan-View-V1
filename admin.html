@@ -112,53 +112,19 @@ function downloadTemplate() {
     });
 }
 
-// ===================== UPLOAD FILE =====================
-function uploadFile() {
-  const file = document.getElementById("uploadFile").files[0];
-  if (!file) {
-    alert("Select a file first");
-    return;
-  }
-
+// ===================== UPLOAD FILE =====================
+  async function uploadFile(inputId, functionName) {
+  const fileInput = document.getElementById(inputId);
+  const file = fileInput.files[0];
+  if (!file) return alert("Please select a file before uploading!");
   const reader = new FileReader();
-
-  reader.onload = function (e) {
-    const text = e.target.result;
-    let rows = [];
-
-    text.split("\n").forEach(line => {
-      if (line.trim() === "") return;
-      rows.push(line.split(","));
-    });
-
-    fetch(GS_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },   // FIXED
-      body: JSON.stringify({
-        action: "uploadHallPlan",
-        data: rows
-      })
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.status === "success") {
-        document.getElementById("uploadStatus").innerText =
-          `Uploaded ${rows.length} rows successfully!`;
-      } else {
-        document.getElementById("uploadStatus").innerText =
-          "Upload failed: " + data.message;
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      alert("Error Uploading File: " + err);
-    });
+  reader.onload = async e => {
+    await postData(functionName, { fileData: e.target.result, fileName: file.name });
+    document.getElementById("uploadStatus").innerHTML = `${file.name} uploaded successfully.`;
+    if (functionName === "uploadStudentSheet") populateDeptDropdown();
   };
-
-  reader.readAsText(file);
+  reader.readAsDataURL(file);
 }
-
-
 
 
 // ===================== DELETE RECORDS =====================
