@@ -133,7 +133,7 @@ function uploadFile() {
 
     fetch(GS_URL, {
       method: "POST",
-      contentType: "application/json",
+      headers: { "Content-Type": "application/json" },   // FIXED
       body: JSON.stringify({
         action: "uploadHallPlan",
         data: rows
@@ -146,17 +146,18 @@ function uploadFile() {
           `Uploaded ${rows.length} rows successfully!`;
       } else {
         document.getElementById("uploadStatus").innerText =
-          "Upload failed";
+          "Upload failed: " + data.message;
       }
     })
     .catch(err => {
       console.error(err);
-      alert("Error uploading file");
+      alert("Error Uploading File: " + err);
     });
   };
 
   reader.readAsText(file);
 }
+
 
 
 
@@ -184,6 +185,7 @@ function deleteRecords() {
 
 </body>
 </html>
+
 
 
 
