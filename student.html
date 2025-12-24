@@ -34,12 +34,32 @@ body{
   animation:fadeInUp 0.5s ease-out;
 }
 .container1{
-  max-width:1500px;
-  margin:20px auto;
-  padding:5px;
-  animation:fadeInUp 0.5s ease-out;
-  text-align: center;
+    text-align:center;
+    animation:fadeInUp 0.5s ease-out;
+  }
+header1{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:5px;
+  margin-bottom:5px;
 }
+  h11{
+    color:#0b5cff;
+    font-size:32px;
+    line-height:1.4;
+  }
+
+  @keyframes fadeInUp{
+    from{
+      opacity:0;
+      transform:translateY(20px);
+    }
+    to{
+      opacity:1;
+      transform:translateY(0);
+    }
+  }
 .card{
   background:var(--card);
   border-radius:16px;
@@ -324,7 +344,13 @@ button.ghost:hover{
 </head>
 <body>
 <div class="container1">
-  <header><h1>Kamaraj College of Engineering and Technology <br>(An Autonomous Institution)</h1></header></div>
+  <header1>
+    <h11>
+      Kamaraj College of Engineering and Technology <br>
+      (An Autonomous Institution)
+    </h11>
+  </header1>
+</div>
 
 <div class="container">
   <header><h1>📝Exam Hall — Student View</h1></header>
