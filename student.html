@@ -3,564 +3,1032 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>View Hall Plan — Student</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Exam Hall Plan — Student Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --accent:#0b63d6;
-  --accent-light:#1d8bf2;
-  --card:#ffffff;
-  --muted:#64748b;
-  --bg:#f7fbff;
-  --success:#16a34a;
-  --danger:#dc3545;
-  --cell-size:60px;
-  --transition-speed:0.3s;
+  --p1:#3b0764;
+  --p2:#6d28d9;
+  --p3:#8b5cf6;
+  --p4:#a78bfa;
+  --p5:#c4b5fd;
+  --p6:#ede9fe;
+  --white:#ffffff;
+  --glass:rgba(255,255,255,0.15);
+  --glass2:rgba(255,255,255,0.25);
+  --glass3:rgba(255,255,255,0.08);
+  --text-dark:#1e0a3c;
+  --text-mid:#4c1d95;
+  --text-light:#7c3aed;
+  --danger:#f43f5e;
+  --success:#10b981;
+  --cell:62px;
 }
 
-*{box-sizing:border-box}
+*{box-sizing:border-box;margin:0;padding:0;}
+
 body{
-  font-family:Inter,system-ui,Segoe UI,Roboto,Arial;
-  margin:0;
-  background:var(--bg);
-  color:#0f172a;
+  font-family:'Outfit',sans-serif;
+  min-height:100vh;
+  background:linear-gradient(135deg,#1a0533 0%,#3b0764 25%,#5b21b6 55%,#7c3aed 80%,#a78bfa 100%);
+  color:var(--white);
+  overflow-x:hidden;
+  position:relative;
 }
 
-.container{
-  max-width:960px;
-  margin:20px auto;
-  padding:18px;
-  animation:fadeInUp 0.5s ease-out;
+/* === ANIMATED BACKGROUND PARTICLES === */
+.bg-canvas{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  overflow:hidden;
 }
-.container1{
-  padding:5px;
+.orb{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(70px);
+  opacity:0.35;
+  animation:orbFloat 12s ease-in-out infinite;
+}
+.orb1{width:400px;height:400px;background:radial-gradient(circle,#7c3aed,transparent);top:-10%;left:-10%;animation-delay:0s;}
+.orb2{width:300px;height:300px;background:radial-gradient(circle,#c4b5fd,transparent);top:40%;right:-5%;animation-delay:-4s;}
+.orb3{width:250px;height:250px;background:radial-gradient(circle,#4c1d95,transparent);bottom:10%;left:20%;animation-delay:-8s;}
+
+@keyframes orbFloat{
+  0%,100%{transform:translate(0,0) scale(1);}
+  33%{transform:translate(30px,-40px) scale(1.08);}
+  66%{transform:translate(-20px,20px) scale(0.94);}
+}
+
+/* Floating sparkles */
+.sparkle{
+  position:absolute;
+  width:4px;height:4px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.7);
+  animation:sparkleFloat linear infinite;
+  pointer-events:none;
+}
+@keyframes sparkleFloat{
+  0%{transform:translateY(100vh) scale(0);opacity:0;}
+  10%{opacity:1;}
+  90%{opacity:0.5;}
+  100%{transform:translateY(-10vh) scale(1);opacity:0;}
+}
+
+/* === LAYOUT === */
+.page{
+  position:relative;
+  z-index:1;
+  min-height:100vh;
+  padding:20px 16px 40px;
+  max-width:900px;
+  margin:0 auto;
+}
+
+/* === HEADER === */
+.site-header{
   text-align:center;
-  animation:fadeInUp 0.5s ease-out;
+  padding:28px 16px 20px;
+  animation:slideDown 0.7s cubic-bezier(.22,1,.36,1) both;
 }
-.card{
-  background:var(--card);
-  border-radius:16px;
-  padding:20px;
-  box-shadow:0 12px 30px rgba(2,6,23,0.08);
-  transition:transform var(--transition-speed);
-}
-.card:hover{
-  transform:translateY(-4px);
-}
-
-header{
-  display:flex;
+.college-badge{
+  display:inline-flex;
   align-items:center;
-  justify-content:space-between;
-  gap:5px;
-  margin-bottom:5px;
+  gap:10px;
+  background:var(--glass2);
+  backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,0.3);
+  padding:10px 20px;
+  border-radius:50px;
+  font-size:0.82rem;
+  font-weight:600;
+  letter-spacing:0.4px;
+  color:rgba(255,255,255,0.92);
+  margin-bottom:20px;
 }
-header h1{
-  font-size:1.25rem;
-  color:var(--accent);
-  letter-spacing:0.5px;
+.college-badge .dot{
+  width:8px;height:8px;
+  border-radius:50%;
+  background:var(--p5);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{
+  0%,100%{transform:scale(1);opacity:1;}
+  50%{transform:scale(1.4);opacity:0.6;}
 }
 
-.form-grid{
+.site-header h1{
+  font-size:clamp(1.6rem,5vw,2.5rem);
+  font-weight:800;
+  background:linear-gradient(90deg,#fff 30%,var(--p5) 70%,#fff 100%);
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:shimmer 4s linear infinite;
+  line-height:1.2;
+  margin-bottom:8px;
+}
+@keyframes shimmer{
+  to{background-position:200% center;}
+}
+.site-header p{
+  color:rgba(255,255,255,0.65);
+  font-size:0.9rem;
+}
+
+/* === GLASS CARD === */
+.glass-card{
+  background:var(--glass);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  border:1px solid rgba(255,255,255,0.22);
+  border-radius:24px;
+  padding:28px;
+  box-shadow:0 24px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
+  animation:fadeUp 0.6s cubic-bezier(.22,1,.36,1) both;
+}
+.glass-card + .glass-card{margin-top:20px;}
+
+/* === LIVE CLOCK === */
+.live-clock{
   display:flex;
-  gap:12px;
-  flex-wrap:wrap;
+  justify-content:center;
+  gap:6px;
+  margin-bottom:22px;
+  animation:fadeUp 0.5s 0.2s both;
 }
-.form-grid > *{
-  flex:1;
-  min-width:140px;
-}
-label{
-  font-weight:600;
-  font-size:0.95rem;
-  margin-bottom:6px;
-  display:block;
-}
-input[type=date], input[type=text], select{
-  width:100%;
-  padding:10px 12px;
+.clock-seg{
+  background:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.18);
   border-radius:10px;
-  border:1px solid #cbd5e1;
-  transition: all 0.2s ease;
-}
-input:focus, select:focus{
-  border-color:var(--accent);
-  box-shadow:0 4px 12px rgba(11,99,214,0.2);
-  outline:none;
-}
-
-button.primary{
-  background:linear-gradient(90deg,var(--accent),var(--accent-light));
-  color:white;
-  padding:12px 18px;
-  border-radius:12px;
-  border:none;
-  cursor:pointer;
-  font-weight:600;
-  transition:all var(--transition-speed);
-}
-button.primary:hover{
-  transform:scale(1.05);
-  box-shadow:0 8px 20px rgba(11,99,214,0.25);
-}
-button.ghost{
-  background:transparent;
-  border:1px solid #cbd5e1;
-  padding:10px 16px;
-  border-radius:10px;
-  cursor:pointer;
-  transition:all var(--transition-speed);
-}
-button.ghost:hover{
-  background:#e6f0ff;
-}
-
-.notice{
-  color:var(--muted);
-  margin-top:8px;
-  font-size:0.95rem;
-}
-
-.student-card{
-  background:white;
-  border-left:6px solid var(--accent);
-  padding:16px 18px;
-  border-radius:12px;
-  box-shadow:0 6px 16px rgba(0,0,0,0.08);
-  margin-top:16px;
-  font-size:1rem;
-  color:#0f172a;
-  text-align: center;
-  animation:fadeInUp 0.5s ease-out;
-}
-
-.hall-title{
-  background:linear-gradient(90deg,var(--accent),var(--accent-light));
-  color:white;
-  padding:10px 16px;
-  border-radius:12px;
+  padding:8px 12px;
+  font-family:'Space Mono',monospace;
   font-size:1.1rem;
   font-weight:700;
-  margin-bottom:12px;
-  display:inline-block;
-  box-shadow:0 4px 12px rgba(11,99,214,0.2);
-}
-
-.hall-wrap{
-  display:flex;
-  gap:10px;
-  align-items:flex-start;
-  flex-wrap:wrap;
-  margin-top:16px;
-}
-.grid-wrap{
-  flex:1;
-  min-width:260px;
-  overflow:auto;
-  padding:8px;
-}
-
-.grid{
-  display:grid;
-  gap:8px;
-  justify-content:start;
-  align-items:center;
-  transition:all 0.3s ease;
-  grid-auto-flow:row;
-}
-
-.cell{
-  width:var(--cell-size);
-  height:calc(var(--cell-size) * 0.8);
-  border-radius:10px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:700;
-  background:#e2e8f0;
-  color:#0f172a;
-  box-shadow:0 4px 10px rgba(2,6,23,0.05);
-  transition:all var(--transition-speed);
-  flex-shrink:0;
-}
-.cell.me{
-  background:linear-gradient(180deg,var(--accent),var(--accent-light));
-  color:white;
-  box-shadow:0 8px 22px rgba(11,99,214,0.3);
-  transform:scale(1.1);
-  font-size:1.05rem;
-}
-.cell.blank{
-  background:transparent;
-  color:transparent;
-  box-shadow:none;
-}
-
-.motivate-box{
-  margin-top:20px;
-  padding:16px;
-  background:linear-gradient(90deg,var(--accent),var(--accent-light));
-  color:white;
-  font-weight:700;
-  border-radius:12px;
+  color:#fff;
+  min-width:48px;
   text-align:center;
-  font-size:1.05rem;
-  opacity:0;
-  transform:translateY(10px);
-  animation:fadeUp 0.8s forwards ease-out;
+  transition:background 0.3s;
 }
-
-.modal-backdrop{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.55);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:40;
-}
-.modal{
-  width:90%;
-  max-width:480px;
-  background:white;
-  border-radius:16px;
-  padding:20px;
-  box-shadow:0 20px 50px rgba(2,6,23,0.2);
-  animation:fadeIn 0.3s ease-out;
-}
-.modal h3{
-  margin-bottom:12px;
-  font-size:1.25rem;
-  color:var(--accent);
-}
-.modal ol{
-  padding-left:18px;
-  margin-bottom:12px;
-}
-.modal li{
-  margin-bottom:8px;
-  line-height:1.4;
-}
-
-#popupOverlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.55);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-}
-.popupBox{
-  background:white;
-  padding:22px 28px;
-  border-radius:16px;
-  width:90%;
-  max-width:400px;
-  text-align:center;
-  box-shadow:0 10px 35px rgba(0,0,0,0.25);
-  animation:fadeIn 0.3s ease-out;
-}
-.popupBox h3{
-  margin-bottom:12px;
-  font-size:1.3rem;
-  font-weight:700;
-  color:var(--accent);
-}
-.popupBox p{
-  font-size:1rem;
-  margin-bottom:18px;
-  color:#555;
-}
-.popupBox button{
-  padding:12px 20px;
-  background:linear-gradient(90deg,var(--accent),var(--accent-light));
-  color:white;
-  border:none;
-  border-radius:10px;
+.clock-label{
+  font-size:0.6rem;
+  color:var(--p5);
+  display:block;
   font-weight:600;
+  letter-spacing:1px;
+  margin-top:2px;
+  font-family:'Outfit',sans-serif;
+}
+.clock-sep{
+  font-family:'Space Mono',monospace;
+  font-size:1.2rem;
+  color:var(--p4);
+  display:flex;
+  align-items:center;
+  padding-bottom:12px;
+  animation:blink 1s step-end infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+
+/* === SECTION TITLE === */
+.section-title{
+  font-size:0.72rem;
+  font-weight:700;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--p4);
+  margin-bottom:18px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.section-title::after{
+  content:'';
+  flex:1;
+  height:1px;
+  background:rgba(255,255,255,0.15);
+}
+
+/* === FORM === */
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:14px;
+  margin-bottom:20px;
+}
+.field{display:flex;flex-direction:column;gap:7px;}
+.field label{
+  font-size:0.8rem;
+  font-weight:600;
+  color:var(--p5);
+  letter-spacing:0.5px;
+  text-transform:uppercase;
+}
+.field input, .field select{
+  background:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.2);
+  border-radius:12px;
+  padding:12px 14px;
+  color:#fff;
+  font-family:'Outfit',sans-serif;
+  font-size:0.95rem;
+  transition:all 0.3s;
+  outline:none;
+  width:100%;
+}
+.field input::placeholder{color:rgba(255,255,255,0.4);}
+.field input:focus, .field select:focus{
+  border-color:var(--p4);
+  background:rgba(255,255,255,0.15);
+  box-shadow:0 0 0 3px rgba(167,139,250,0.25);
+}
+.field select option{
+  background:#3b0764;
+  color:#fff;
+}
+/* Date input icon color */
+::-webkit-calendar-picker-indicator{filter:invert(1);cursor:pointer;}
+
+/* === BUTTONS === */
+.btn-primary{
+  background:linear-gradient(135deg,#7c3aed,#a78bfa);
+  color:#fff;
+  border:none;
+  border-radius:14px;
+  padding:14px 28px;
+  font-family:'Outfit',sans-serif;
+  font-size:1rem;
+  font-weight:700;
+  cursor:pointer;
+  transition:all 0.3s cubic-bezier(.22,1,.36,1);
+  position:relative;
+  overflow:hidden;
+  letter-spacing:0.3px;
+  box-shadow:0 8px 24px rgba(124,58,237,0.4);
+}
+.btn-primary::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.15),transparent);
+  opacity:0;
+  transition:opacity 0.3s;
+}
+.btn-primary:hover::before{opacity:1;}
+.btn-primary:hover{
+  transform:translateY(-3px);
+  box-shadow:0 14px 32px rgba(124,58,237,0.5);
+}
+.btn-primary:active{transform:translateY(0);}
+.btn-primary:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+
+.btn-ghost{
+  background:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.25);
+  color:#fff;
+  border-radius:12px;
+  padding:12px 20px;
+  font-family:'Outfit',sans-serif;
+  font-size:0.95rem;
   cursor:pointer;
   transition:all 0.3s;
 }
-.popupBox button:hover{
-  transform:scale(1.05);
-  box-shadow:0 8px 20px rgba(11,99,214,0.25);
+.btn-ghost:hover{background:rgba(255,255,255,0.18);}
+
+/* === STUDENT INFO CARD === */
+.student-result{
+  background:linear-gradient(135deg,rgba(124,58,237,0.35),rgba(167,139,250,0.2));
+  border:1px solid rgba(167,139,250,0.4);
+  border-radius:18px;
+  padding:20px 22px;
+  margin-top:20px;
+  animation:fadeUp 0.5s cubic-bezier(.22,1,.36,1) both;
+}
+.hall-badge{
+  display:inline-block;
+  background:linear-gradient(90deg,var(--p2),var(--p3));
+  padding:6px 18px;
+  border-radius:50px;
+  font-weight:700;
+  font-size:1rem;
+  letter-spacing:0.5px;
+  margin-bottom:14px;
+  box-shadow:0 4px 16px rgba(109,40,217,0.4);
+}
+.info-row{
+  display:flex;
+  gap:24px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+.info-chip{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+.info-chip .lbl{font-size:0.72rem;color:var(--p5);font-weight:600;letter-spacing:1px;text-transform:uppercase;}
+.info-chip .val{font-size:1.1rem;font-weight:700;color:#fff;}
+
+/* === SEAT GRID === */
+.grid-section{
+  margin-top:20px;
+  animation:fadeUp 0.6s 0.1s cubic-bezier(.22,1,.36,1) both;
+}
+.grid-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:16px;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.board-direction{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(255,255,255,0.1);
+  border-radius:50px;
+  padding:6px 14px;
+  font-size:0.8rem;
+  color:var(--p5);
+}
+.legend{
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
+}
+.legend-item{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-size:0.82rem;
+  color:rgba(255,255,255,0.75);
+}
+.legend-dot{
+  width:16px;height:16px;
+  border-radius:6px;
+}
+.legend-dot.mine{background:linear-gradient(135deg,#7c3aed,#a78bfa);}
+.legend-dot.other{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);}
+
+.grid-outer{
+  overflow-x:auto;
+  padding:12px 4px;
+}
+.grid{
+  display:grid;
+  gap:8px;
+  width:max-content;
+  margin:0 auto;
+}
+.cell{
+  width:var(--cell);
+  height:calc(var(--cell) * 0.75);
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  font-size:0.9rem;
+  background:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.15);
+  color:rgba(255,255,255,0.65);
+  transition:all 0.3s;
+  cursor:default;
+  position:relative;
+  overflow:hidden;
+}
+.cell:hover{
+  background:rgba(255,255,255,0.18);
+  transform:translateY(-2px);
+  color:#fff;
+}
+.cell.me{
+  background:linear-gradient(135deg,#7c3aed,#a78bfa);
+  border-color:rgba(255,255,255,0.4);
+  color:#fff;
+  box-shadow:0 8px 24px rgba(124,58,237,0.5), 0 0 0 3px rgba(167,139,250,0.3);
+  transform:scale(1.12) translateY(-3px);
+  z-index:2;
+  animation:mePulse 2.5s ease-in-out infinite;
+}
+@keyframes mePulse{
+  0%,100%{box-shadow:0 8px 24px rgba(124,58,237,0.5),0 0 0 3px rgba(167,139,250,0.3);}
+  50%{box-shadow:0 12px 32px rgba(124,58,237,0.7),0 0 0 6px rgba(167,139,250,0.2);}
+}
+.cell.me::after{
+  content:'YOU';
+  position:absolute;
+  bottom:2px;
+  font-size:0.5rem;
+  letter-spacing:1.5px;
+  opacity:0.85;
+  font-weight:800;
+}
+.cell.blank{
+  background:transparent;
+  border-color:transparent;
+  pointer-events:none;
 }
 
-@keyframes fadeInUp{
-  from{opacity:0; transform:translateY(15px);}
-  to{opacity:1; transform:translateY(0);}
+/* Blackboard */
+.blackboard{
+  width:100%;
+  background:rgba(255,255,255,0.07);
+  border:2px dashed rgba(255,255,255,0.2);
+  border-radius:14px;
+  padding:12px;
+  text-align:center;
+  font-size:0.82rem;
+  color:rgba(255,255,255,0.5);
+  letter-spacing:2px;
+  font-weight:600;
+  margin-bottom:10px;
+}
+
+/* === MOTIVATE BOX === */
+.motivate{
+  background:linear-gradient(135deg,#7c3aed,#5b21b6,#4c1d95);
+  border-radius:18px;
+  padding:22px;
+  text-align:center;
+  margin-top:22px;
+  border:1px solid rgba(255,255,255,0.2);
+  box-shadow:0 12px 36px rgba(92,33,186,0.4);
+  animation:fadeUp 0.7s 0.3s cubic-bezier(.22,1,.36,1) both;
+  position:relative;
+  overflow:hidden;
+}
+.motivate::before{
+  content:'';
+  position:absolute;
+  top:-50%;left:-50%;
+  width:200%;height:200%;
+  background:conic-gradient(from 0deg,transparent,rgba(255,255,255,0.04),transparent 60%);
+  animation:rotateBg 8s linear infinite;
+}
+@keyframes rotateBg{to{transform:rotate(360deg);}}
+.motivate .emoji{font-size:2rem;margin-bottom:8px;display:block;}
+.motivate h3{font-size:1.1rem;font-weight:800;margin-bottom:6px;position:relative;}
+.motivate p{font-size:0.9rem;color:rgba(255,255,255,0.75);position:relative;}
+
+/* === EXAM COUNTDOWN === */
+.countdown-section{
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:18px;
+  padding:18px 20px;
+  text-align:center;
+  margin-top:20px;
+  animation:fadeUp 0.5s 0.25s both;
+}
+.countdown-section h4{
+  font-size:0.75rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--p4);
+  font-weight:700;
+  margin-bottom:14px;
+}
+.count-row{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.count-box{
+  background:rgba(124,58,237,0.3);
+  border:1px solid rgba(167,139,250,0.3);
+  border-radius:12px;
+  padding:10px 16px;
+  min-width:64px;
+}
+.count-num{
+  font-family:'Space Mono',monospace;
+  font-size:1.4rem;
+  font-weight:700;
+  color:#fff;
+  display:block;
+}
+.count-lbl{
+  font-size:0.65rem;
+  color:var(--p5);
+  font-weight:600;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+
+/* === MODAL BACKDROP === */
+.modal-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.65);
+  backdrop-filter:blur(8px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:100;
+  padding:20px;
+}
+.modal{
+  background:linear-gradient(145deg,#2d0a5e,#4c1d95);
+  border:1px solid rgba(167,139,250,0.35);
+  border-radius:24px;
+  padding:28px;
+  width:100%;
+  max-width:460px;
+  box-shadow:0 30px 80px rgba(0,0,0,0.5);
+  animation:modalIn 0.4s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes modalIn{
+  from{opacity:0;transform:scale(0.85) translateY(20px);}
+  to{opacity:1;transform:scale(1) translateY(0);}
+}
+.modal h3{
+  font-size:1.3rem;
+  font-weight:800;
+  margin-bottom:16px;
+  color:#fff;
+}
+.instr-list{
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-bottom:22px;
+}
+.instr-list li{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  background:rgba(255,255,255,0.07);
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:0.9rem;
+  color:rgba(255,255,255,0.85);
+  line-height:1.4;
+}
+.instr-num{
+  background:linear-gradient(135deg,#7c3aed,#a78bfa);
+  border-radius:50%;
+  width:22px;height:22px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.72rem;font-weight:700;
+  flex-shrink:0;margin-top:1px;
+}
+.modal-actions{
+  display:flex;
+  gap:10px;
+  justify-content:flex-end;
+}
+
+/* === POPUP === */
+#popupOverlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.65);
+  backdrop-filter:blur(8px);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+  padding:20px;
+}
+.popup-box{
+  background:linear-gradient(145deg,#2d0a5e,#4c1d95);
+  border:1px solid rgba(167,139,250,0.35);
+  border-radius:22px;
+  padding:28px 24px;
+  width:100%;
+  max-width:380px;
+  text-align:center;
+  box-shadow:0 24px 60px rgba(0,0,0,0.5);
+  animation:modalIn 0.4s cubic-bezier(.22,1,.36,1) both;
+}
+.popup-icon{font-size:2.2rem;display:block;margin-bottom:10px;}
+.popup-box h3{font-size:1.2rem;font-weight:800;margin-bottom:8px;}
+.popup-box p{color:rgba(255,255,255,0.75);font-size:0.92rem;margin-bottom:20px;}
+
+/* === UTILITY ANIMATIONS === */
+@keyframes slideDown{
+  from{opacity:0;transform:translateY(-30px);}
+  to{opacity:1;transform:translateY(0);}
 }
 @keyframes fadeUp{
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
-}
-@keyframes fadeIn{
-  from{opacity:0; transform:translateY(10px);} 
-  to{opacity:1; transform:translateY(0);} 
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
 }
 
-@media(max-width:768px){
-  .form-grid{flex-direction:column;}
-  .cell{width:50px;height:40px;font-size:0.85rem;gap:8px;}
-  .grid{column-gap:2px;row-gap:3px;}
-  .grid-wrap{overflow-x:auto;}
+/* === TOAST === */
+.toast{
+  position:fixed;
+  bottom:24px;right:24px;
+  background:linear-gradient(135deg,#7c3aed,#a78bfa);
+  color:#fff;
+  padding:12px 20px;
+  border-radius:14px;
+  font-size:0.88rem;
+  font-weight:600;
+  box-shadow:0 8px 24px rgba(0,0,0,0.4);
+  z-index:9998;
+  transform:translateY(80px);
+  opacity:0;
+  transition:all 0.4s cubic-bezier(.22,1,.36,1);
 }
+.toast.show{transform:translateY(0);opacity:1;}
 
-@media(max-width:480px){
-  header h1{font-size:1.1rem;}
-  .student-card{font-size:0.95rem;padding:14px;}
-  .motivate-box{font-size:0.95rem;padding:14px;}
-  .cell{width:40px;height:32px;font-size:0.75rem;gap:8px;}
-  .grid{column-gap:2px;row-gap:3px;}
-  .grid-wrap{overflow-x:auto;}
+/* === MOBILE === */
+@media(max-width:600px){
+  .glass-card{padding:20px 16px;}
+  :root{--cell:52px;}
+  .cell{font-size:0.78rem;border-radius:10px;}
+  .info-row{gap:16px;}
+  .live-clock{gap:4px;}
+  .clock-seg{padding:6px 8px;font-size:0.95rem;min-width:40px;}
+  .form-grid{grid-template-columns:1fr;}
+  .modal{padding:22px 18px;}
+}
+@media(max-width:380px){
+  :root{--cell:44px;}
+  .grid{gap:5px;}
 }
 </style>
 </head>
 <body>
-<div class="container">
-  <header>
-    <h1>
-      Kamaraj College of Engineering and Technology <br>
-      (An Autonomous Institution)
-    </h1>
-  </header>
+
+<!-- BG EFFECTS -->
+<div class="bg-canvas">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
 </div>
 
-<div class="container">
-  <header><h1>📝Exam Hall — Student View</h1></header>
+<div class="page">
 
-  <div class="card">
+  <!-- HEADER -->
+  <div class="site-header">
+    <div class="college-badge">
+      <span class="dot"></span>
+      Kamaraj College of Engineering and Technology
+      <span class="dot"></span>
+    </div>
+    <h1>📝 Exam Hall Student Portal</h1>
+    <p>Autonomous Institution · Find Your Seating Instantly</p>
+  </div>
+
+  <!-- LIVE CLOCK -->
+  <div class="live-clock" id="clockRow">
+    <div class="clock-seg" id="cHH"><span id="hh">--</span><span class="clock-label">HRS</span></div>
+    <div class="clock-sep">:</div>
+    <div class="clock-seg" id="cMM"><span id="mm">--</span><span class="clock-label">MIN</span></div>
+    <div class="clock-sep">:</div>
+    <div class="clock-seg" id="cSS"><span id="ss">--</span><span class="clock-label">SEC</span></div>
+    <div style="display:flex;align-items:flex-end;padding-bottom:14px;margin-left:4px;">
+      <span id="ampm" style="font-size:0.75rem;color:var(--p4);font-weight:700;letter-spacing:1px;"></span>
+    </div>
+  </div>
+
+  <!-- SEARCH CARD -->
+  <div class="glass-card">
+    <div class="section-title">🔍 Find Your Seat</div>
+
     <div class="form-grid">
-      <div>
-        <label for="date">Date</label>
+      <div class="field">
+        <label for="date">📅 Exam Date</label>
         <input id="date" type="date" />
       </div>
-
-      <div>
-        <label for="session">Session</label>
+      <div class="field">
+        <label for="session">⏰ Session</label>
         <select id="session">
-          <option value="FN">FN (08:30–10:30)</option>
-          <option value="AN">AN (12:30–14:30)</option>
+          <option value="FN">FN — 08:30 to 10:30</option>
+          <option value="AN">AN — 12:30 to 14:30</option>
         </select>
       </div>
-
-      <div>
-        <label for="regno">Register No</label>
-        <input id="regno" type="text" placeholder="Enter Register Number" />
+      <div class="field">
+        <label for="regno">🎓 Register No.</label>
+        <input id="regno" type="text" placeholder="e.g. 21KETCS001" autocomplete="off"/>
       </div>
     </div>
 
-    <div style="display:flex;gap:10px;margin-top:12px;align-items:center">
-      <button class="primary" id="viewBtn" onclick="showInstructions()">Check Seating</button>
-      <div class="notice">Read instructions before viewing.</div>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <button class="btn-primary" id="viewBtn" onclick="showInstructions()">
+        <span>🚀 Check My Seat</span>
+      </button>
+      <span style="font-size:0.82rem;color:rgba(255,255,255,0.55);">Instructions will appear before viewing</span>
     </div>
 
-    <div id="studentInfo" class="student-card" style="display:none;"></div>
+    <!-- STUDENT INFO -->
+    <div id="studentInfo" class="student-result" style="display:none;"></div>
+  </div>
 
-    <div id="resultArea" style="display:none;margin-top:16px">
-      <div class="hall-wrap">
-        <div class="grid-wrap card" style="padding:12px;">
-          <div id="gridContainer" class="grid"></div>
+  <!-- SEAT GRID (hidden until result) -->
+  <div id="resultArea" style="display:none;">
+    <div class="glass-card grid-section">
+      <div class="grid-header">
+        <div class="section-title" style="margin-bottom:0;">🪑 Seat Map</div>
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot mine"></div>Your Seat</div>
+          <div class="legend-item"><div class="legend-dot other"></div>Other</div>
         </div>
       </div>
-
-      <div id="motivateBox" class="motivate-box" style="display:none;">
-        🌟 Stay confident! You are fully prepared — Give your best in the exam! 🌟
+      <div class="blackboard">📋 BLACKBOARD / INVIGILATOR DESK</div>
+      <div class="board-direction" style="justify-content:center;margin-bottom:12px;">
+        <span>↑ Front of Hall</span>
+      </div>
+      <div class="grid-outer">
+        <div id="gridContainer" class="grid"></div>
       </div>
     </div>
-  </div>
-</div>
 
+    <!-- COUNTDOWN TO EXAM -->
+    <div class="countdown-section" id="countdownSection" style="display:none;">
+      <h4>⏱ Time Until Exam Starts</h4>
+      <div class="count-row">
+        <div class="count-box"><span class="count-num" id="cdH">--</span><span class="count-lbl">Hrs</span></div>
+        <div class="count-box"><span class="count-num" id="cdM">--</span><span class="count-lbl">Min</span></div>
+        <div class="count-box"><span class="count-num" id="cdS">--</span><span class="count-lbl">Sec</span></div>
+      </div>
+    </div>
+
+    <!-- MOTIVATE -->
+    <div id="motivateBox" class="motivate" style="display:none;">
+      <span class="emoji">🌟</span>
+      <h3>You've Got This!</h3>
+      <p>Stay confident — you are fully prepared. Give your absolute best. Best of luck! 💜</p>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<!-- INSTRUCTION MODAL -->
 <div id="instrModal" class="modal-backdrop">
   <div class="modal">
-    <h3>Exam Instructions</h3>
-    <ol>
-      <li>Carry your ID card and Hall Ticket.</li>
-      <li>Mobile phones are prohibited.</li>
-      <li>Reach 15 minutes early.</li>
-      <li>Follow the invigilator's instructions strictly.</li>
-      <li>Ensure not carrying any written and Printed Materials.</li>
-    </ol>
-    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
-      <button class="ghost" onclick="closeInstructions()">Cancel</button>
-      <button class="primary" onclick="proceedToView()">I Agree — Check Seating</button>
+    <h3>📋 Exam Instructions</h3>
+    <ul class="instr-list">
+      <li><div class="instr-num">1</div>Carry your College ID Card and Hall Ticket to the exam hall.</li>
+      <li><div class="instr-num">2</div>Mobile phones & electronic devices are strictly prohibited.</li>
+      <li><div class="instr-num">3</div>Arrive at least 15 minutes before the exam begins.</li>
+      <li><div class="instr-num">4</div>Do not carry any written or printed materials into the hall.</li>
+      <li><div class="instr-num">5</div>Follow the invigilator's instructions strictly at all times.</li>
+    </ul>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeInstructions()">Cancel</button>
+      <button class="btn-primary" onclick="proceedToView()">✅ I Agree — View Seat</button>
     </div>
   </div>
 </div>
 
-<div id="popupOverlay" style="display:none;">
-  <div class="popupBox">
-    <h3 id="popupTitle">Message</h3>
+<!-- POPUP -->
+<div id="popupOverlay">
+  <div class="popup-box">
+    <span class="popup-icon" id="popupIcon">ℹ️</span>
+    <h3 id="popupTitle">Notice</h3>
     <p id="popupMessage"></p>
-    <button onclick="closePopup()">OK</button>
+    <button class="btn-primary" style="width:100%;" onclick="closePopup()">OK, Got It</button>
   </div>
 </div>
 
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
 <script>
-const GS_URL = "https://script.google.com/macros/s/AKfycbzvbkkbY39ofd6sMx6KciGX4yxGctpvuXAvEjVc7MDoT7bq-XSXQJdPJJSeohAMwpCy/exec";
-
-function showPopup(message, title="Notification"){
-  document.getElementById("popupTitle").innerText = title;
-  document.getElementById("popupMessage").innerText = message;
-  document.getElementById("popupOverlay").style.display = "flex";
-}
-
-function closePopup(){
-  document.getElementById("popupOverlay").style.display = "none";
-}
-
-function showInstructions(){
-  if(!document.getElementById('date').value || !document.getElementById('regno').value.trim()){
-    showPopup("Please enter date and register number", "Missing Inputs");
-    return;
+/* ---- SPARKLES ---- */
+(function(){
+  const canvas = document.querySelector('.bg-canvas');
+  for(let i=0;i<18;i++){
+    const s = document.createElement('div');
+    s.className='sparkle';
+    s.style.cssText = `
+      left:${Math.random()*100}%;
+      width:${2+Math.random()*4}px;
+      height:${2+Math.random()*4}px;
+      animation-duration:${6+Math.random()*10}s;
+      animation-delay:${-Math.random()*10}s;
+      opacity:${0.3+Math.random()*0.5};
+    `;
+    canvas.appendChild(s);
   }
-  document.getElementById("instrModal").style.display="flex";
+})();
+
+/* ---- LIVE CLOCK ---- */
+function updateClock(){
+  const now = new Date();
+  let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+  const ap = h>=12?'PM':'AM';
+  h = h%12||12;
+  document.getElementById('hh').textContent = String(h).padStart(2,'0');
+  document.getElementById('mm').textContent = String(m).padStart(2,'0');
+  document.getElementById('ss').textContent = String(s).padStart(2,'0');
+  document.getElementById('ampm').textContent = ap;
+}
+updateClock();
+setInterval(updateClock,1000);
+
+/* ---- TOAST ---- */
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
 }
 
+/* ---- POPUP ---- */
+function showPopup(msg,title="Notice",icon="ℹ️"){
+  document.getElementById('popupIcon').textContent=icon;
+  document.getElementById('popupTitle').textContent=title;
+  document.getElementById('popupMessage').textContent=msg;
+  document.getElementById('popupOverlay').style.display='flex';
+}
+function closePopup(){
+  document.getElementById('popupOverlay').style.display='none';
+}
+
+/* ---- INSTRUCTIONS ---- */
+function showInstructions(){
+  if(!document.getElementById('date').value){
+    showPopup('Please select the exam date.','Missing Date','📅'); return;
+  }
+  if(!document.getElementById('regno').value.trim()){
+    showPopup('Please enter your Register Number.','Missing Input','🎓'); return;
+  }
+  document.getElementById('instrModal').style.display='flex';
+}
 function closeInstructions(){
-  document.getElementById("instrModal").style.display="none";
+  document.getElementById('instrModal').style.display='none';
 }
-
 function proceedToView(){
   closeInstructions();
   viewHallPlan();
 }
 
-function formatToIST(dateObj){
-  const utc = dateObj.getTime() + (dateObj.getTimezoneOffset() * 60000);
-  const istOffset = 5.5 * 60 * 60000;
-  const ist = new Date(utc + istOffset);
+/* ---- API ---- */
+const GS_URL="https://script.google.com/macros/s/AKfycbzvbkkbY39ofd6sMx6KciGX4yxGctpvuXAvEjVc7MDoT7bq-XSXQJdPJJSeohAMwpCy/exec";
 
-  const dd = String(ist.getDate()).padStart(2,'0');
-  const mm = String(ist.getMonth()+1).padStart(2,'0');
-  const yyyy = ist.getFullYear();
-
-  let hours = ist.getHours();
-  const minutes = String(ist.getMinutes()).padStart(2,'0');
-  const seconds = String(ist.getSeconds()).padStart(2,'0');
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12;
-  hours = hours ? hours : 12;
-  const hh = String(hours).padStart(2,'0');
-
-  return `${dd}/${mm}/${yyyy}, ${hh}:${minutes}:${seconds} ${ampm}`;
+function hasIncremented(d,ses,r){
+  return localStorage.getItem(`viewed__${d}__${ses}__${r}`)===`1`;
+}
+function markIncremented(d,ses,r){
+  localStorage.setItem(`viewed__${d}__${ses}__${r}`,'1');
 }
 
-function hasIncremented(date, session, reg){
-  const key = `viewed__${date}__${session}__${reg}`;
-  return localStorage.getItem(key) === '1';
-}
-function markIncremented(date, session, reg){
-  const key = `viewed__${date}__${session}__${reg}`;
-  localStorage.setItem(key, '1');
-}
-
-async function updateSeenCount(date, session, reg, lastSeenIST){
+async function updateSeenCount(date,session,reg,ist){
   try{
-    const params = new URLSearchParams({action:'updateSeen', date:date, session:session, regno:reg, lastSeen: lastSeenIST});
-    const res = await fetch(`${GS_URL}?${params.toString()}`);
-    const j = await res.json();
-    return j;
-  } catch(e){
-    console.warn('updateSeenCount failed', e);
-    return null;
-  }
+    const p=new URLSearchParams({action:'updateSeen',date,session,regno:reg,lastSeen:ist});
+    const r=await fetch(`${GS_URL}?${p}`);
+    return await r.json();
+  }catch(e){return null;}
 }
 
+function formatToIST(d){
+  const utc=d.getTime()+(d.getTimezoneOffset()*60000);
+  const ist=new Date(utc+5.5*3600000);
+  const dd=String(ist.getDate()).padStart(2,'0');
+  const mm=String(ist.getMonth()+1).padStart(2,'0');
+  const yy=ist.getFullYear();
+  let h=ist.getHours();
+  const mi=String(ist.getMinutes()).padStart(2,'0');
+  const ss=String(ist.getSeconds()).padStart(2,'0');
+  const ap=h>=12?'PM':'AM';
+  h=h%12||12;
+  return `${dd}/${mm}/${yy}, ${String(h).padStart(2,'0')}:${mi}:${ss} ${ap}`;
+}
+
+/* ---- COUNTDOWN to exam ---- */
+let cdTimer=null;
+function startCountdown(date, session){
+  const [y,mo,day] = date.split('-').map(Number);
+  const startHour = session==='FN' ? 8 : 12;
+  const startMin  = session==='FN' ? 30 : 30;
+  const examStart = new Date(y, mo-1, day, startHour, startMin, 0);
+
+  const section = document.getElementById('countdownSection');
+  if(cdTimer) clearInterval(cdTimer);
+
+  function tick(){
+    const diff = examStart - new Date();
+    if(diff<=0){
+      document.getElementById('cdH').textContent='00';
+      document.getElementById('cdM').textContent='00';
+      document.getElementById('cdS').textContent='00';
+      section.querySelector('h4').textContent='🎉 Exam Has Started!';
+      clearInterval(cdTimer);
+      return;
+    }
+    const h=Math.floor(diff/3600000);
+    const m=Math.floor((diff%3600000)/60000);
+    const s=Math.floor((diff%60000)/1000);
+    document.getElementById('cdH').textContent=String(h).padStart(2,'0');
+    document.getElementById('cdM').textContent=String(m).padStart(2,'0');
+    document.getElementById('cdS').textContent=String(s).padStart(2,'0');
+  }
+  section.style.display='block';
+  tick();
+  cdTimer = setInterval(tick,1000);
+}
+
+/* ---- SEAT MATRIX ---- */
+function buildMatrix(rows,cols){
+  const matrix=[];
+  let n=1;
+  for(let c=0;c<cols;c++){
+    const col=[];
+    for(let r=0;r<rows;r++) col.push(n++);
+    if(c%2===1) col.reverse();
+    matrix.push(col);
+  }
+  const final=[];
+  for(let r=0;r<rows;r++){
+    const row=[];
+    for(let c=0;c<cols;c++) row.push(matrix[c][r]);
+    final.push(row);
+  }
+  return final;
+}
+
+/* ---- MAIN ---- */
 async function viewHallPlan(){
   const date=document.getElementById('date').value;
   const session=document.getElementById('session').value;
   const reg=document.getElementById('regno').value.trim();
 
   const btn=document.getElementById('viewBtn');
-  btn.disabled=true; 
-  btn.innerText='Checking...';
+  btn.disabled=true;
+  btn.innerHTML='<span>⏳ Searching...</span>';
 
   try{
-    const res = await fetch(`${GS_URL}?action=viewHallPlan&date=${encodeURIComponent(date)}&session=${encodeURIComponent(session)}&regno=${encodeURIComponent(reg)}`);
-    const j = await res.json();
+    const res=await fetch(`${GS_URL}?action=viewHallPlan&date=${encodeURIComponent(date)}&session=${encodeURIComponent(session)}&regno=${encodeURIComponent(reg)}`);
+    const j=await res.json();
 
-    btn.disabled=false; 
-    btn.innerText='Check Seating';
+    btn.disabled=false;
+    btn.innerHTML='<span>🚀 Check My Seat</span>';
 
-    if(j.status!=="success"){
-      showPopup(j.message || "No record found for this Register Number on this Date/Session", "Please Wait");
-      document.getElementById("resultArea").style.display="none";
+    if(j.status!=='success'){
+      showPopup(j.message||'No record found for this Register Number on the selected Date/Session. Please try again.','Not Found','🔍');
+      document.getElementById('resultArea').style.display='none';
       return;
     }
 
-    document.getElementById("resultArea").style.display="block";
+    const me=j.me||{};
+    const rows=5,cols=5;
+    const final=buildMatrix(rows,cols);
 
-    const me=j.me || {};
-    const hallPlan=j.hallPlan || [];
-
-    document.getElementById("studentInfo").style.display="block";
-    document.getElementById("studentInfo").innerHTML = `
-      <div class="hall-title">Hall: ${me.Hall}</div>
-      <div><b>Register No:</b> ${me.RegNo}</div>
-      <div><b>Seat No:</b> ${me.Seat}</div>
+    document.getElementById('studentInfo').style.display='block';
+    document.getElementById('studentInfo').innerHTML=`
+      <div class="hall-badge">🏫 Hall: ${me.Hall}</div>
+      <div class="info-row">
+        <div class="info-chip">
+          <span class="lbl">Register No</span>
+          <span class="val">${me.RegNo}</span>
+        </div>
+        <div class="info-chip">
+          <span class="lbl">Seat Number</span>
+          <span class="val">🪑 ${me.Seat}</span>
+        </div>
+        <div class="info-chip">
+          <span class="lbl">Session</span>
+          <span class="val">${session}</span>
+        </div>
+      </div>
     `;
 
-    // Seat matrix (snake pattern)
-    const rows = 5;
-    const cols = 5;
-    const matrix = [];
-    let seatNumber = 1;
-    for (let c = 0; c < cols; c++) {
-      const colSeats = [];
-      for (let r = 0; r < rows; r++) colSeats.push(seatNumber++);
-      if (c % 2 === 1) colSeats.reverse();
-      matrix.push(colSeats);
-    }
-    const finalMatrix = [];
-    for (let r = 0; r < rows; r++) {
-      const rowArr = [];
-      for (let c = 0; c < cols; c++) rowArr.push(matrix[c][r]);
-      finalMatrix.push(rowArr);
-    }
+    document.getElementById('resultArea').style.display='block';
 
-    const grid = document.getElementById("gridContainer");
-    grid.style.gridTemplateColumns = `repeat(${cols}, var(--cell-size))`;
-    grid.innerHTML = "";
+    const grid=document.getElementById('gridContainer');
+    grid.style.gridTemplateColumns=`repeat(${cols},var(--cell))`;
+    grid.innerHTML='';
 
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const seatNo = finalMatrix[r][c];
-        const div = document.createElement("div");
-
-        if(Number(me.Seat) === seatNo){
-          div.className = "cell me";
-          div.innerText = seatNo;
-        } else {
-          div.className = "cell";
-          div.innerText = seatNo;
-        }
-
+    for(let r=0;r<rows;r++){
+      for(let c=0;c<cols;c++){
+        const sn=final[r][c];
+        const div=document.createElement('div');
+        div.className=Number(me.Seat)===sn?'cell me':'cell';
+        div.textContent=sn;
+        div.style.animationDelay=`${(r*cols+c)*0.03}s`;
+        div.style.animation='fadeUp 0.4s ease both';
         grid.appendChild(div);
       }
     }
 
-    document.getElementById("motivateBox").style.display="block";
+    document.getElementById('motivateBox').style.display='block';
+    startCountdown(date, session);
+    showToast('✅ Seat found! Check your seat below.');
 
-    if(!hasIncremented(date, session, reg)){
-      const now = new Date();
-      const ist = formatToIST(now);
-      const upd = await updateSeenCount(date, session, reg, ist);
-      if(upd && upd.status==='success') markIncremented(date, session, reg);
+    if(!hasIncremented(date,session,reg)){
+      const ist=formatToIST(new Date());
+      const upd=await updateSeenCount(date,session,reg,ist);
+      if(upd&&upd.status==='success') markIncremented(date,session,reg);
     }
 
-  } catch(e){
+  }catch(e){
     console.error(e);
     btn.disabled=false;
-    btn.innerText='Check Seating';
-    showPopup("Failed to fetch hall plan. Check your internet or try later.", "Error");
+    btn.innerHTML='<span>🚀 Check My Seat</span>';
+    showPopup('Failed to fetch hall plan. Please check your internet connection and try again.','Connection Error','📡');
   }
 }
-
 </script>
 </body>
 </html>
