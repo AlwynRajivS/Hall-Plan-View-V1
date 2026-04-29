@@ -521,33 +521,107 @@ body{
 
 /* === SESSION LOCK BANNER === */
 .lock-banner{
-  background:linear-gradient(135deg,#1A0040,#3B0080);
-  border:1.5px solid rgba(196,160,255,0.3);
-  border-radius:18px;
-  padding:22px 24px;
-  text-align:center;
+  background:linear-gradient(145deg,#12002E,#2A006A,#4A00A8);
+  border:1.5px solid rgba(196,160,255,0.25);
+  border-radius:22px;
+  padding:28px 24px 22px;
   margin-top:16px;
   display:none;
-  animation:popIn 0.4s cubic-bezier(.34,1.56,.64,1) both;
+  animation:popIn 0.5s cubic-bezier(.34,1.56,.64,1) both;
+  position:relative;overflow:hidden;
 }
-.lock-icon{font-size:2.2rem;display:block;margin-bottom:10px;}
+.lock-banner::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 40% at 80% 20%,rgba(196,160,255,0.12),transparent),
+             radial-gradient(ellipse 40% 50% at 10% 80%,rgba(139,92,246,0.15),transparent);
+  pointer-events:none;
+}
+.lock-top{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px;}
+.lock-icon-wrap{
+  width:48px;height:48px;
+  background:rgba(255,255,255,0.12);
+  border:1px solid rgba(255,255,255,0.2);
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;flex-shrink:0;
+}
 .lock-title{
   font-family:'DM Serif Display',serif;
-  font-size:1.25rem;font-weight:400;
-  color:#fff;margin-bottom:6px;
+  font-size:1.3rem;font-weight:400;
+  color:#fff;
 }
-.lock-sub{font-size:0.9rem;color:rgba(255,255,255,0.65);line-height:1.5;margin-bottom:16px;}
-.lock-countdown{
-  display:inline-flex;align-items:center;gap:8px;
+.lock-sub{font-size:0.88rem;color:rgba(255,255,255,0.6);line-height:1.5;margin-bottom:18px;text-align:center;}
+
+/* Countdown timer */
+.lock-timer-row{display:flex;justify-content:center;gap:10px;margin-bottom:22px;}
+.lock-seg{
   background:rgba(255,255,255,0.1);
-  border:1px solid rgba(255,255,255,0.2);
-  border-radius:50px;padding:8px 18px;
-  font-family:'DM Mono',monospace;
-  font-size:1rem;font-weight:500;
-  color:#E8D8FF;
-  letter-spacing:1px;
+  border:1px solid rgba(255,255,255,0.18);
+  border-radius:12px;
+  padding:10px 14px;text-align:center;min-width:58px;
 }
-.lock-countdown-label{font-size:0.72rem;color:var(--pur5);font-weight:600;letter-spacing:1px;display:block;margin-top:6px;}
+.lock-seg-num{
+  font-family:'DM Mono',monospace;
+  font-size:1.5rem;font-weight:700;color:#fff;display:block;line-height:1;
+}
+.lock-seg-lbl{font-size:0.6rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--pur5);margin-top:4px;display:block;}
+.lock-timer-sep{
+  font-family:'DM Mono',monospace;font-size:1.5rem;color:rgba(255,255,255,0.4);
+  display:flex;align-items:center;padding-bottom:18px;
+  animation:blink 1s step-end infinite;
+}
+
+/* Divider */
+.lock-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);margin-bottom:20px;}
+
+/* Motivational quote */
+.mot-quote-block{
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.12);
+  border-left:3px solid var(--pur4);
+  border-radius:0 12px 12px 0;
+  padding:14px 16px;
+  margin-bottom:18px;
+  text-align:left;
+  position:relative;
+}
+.mot-quote-text{
+  font-family:'DM Serif Display',serif;
+  font-size:1rem;color:rgba(255,255,255,0.9);
+  line-height:1.55;font-style:italic;margin-bottom:6px;
+}
+.mot-quote-author{font-size:0.75rem;color:var(--pur5);font-weight:600;letter-spacing:0.5px;}
+
+/* Prep tips */
+.prep-title{
+  font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:var(--pur5);margin-bottom:12px;text-align:center;
+}
+.prep-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.prep-card{
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:12px;padding:12px;
+  display:flex;gap:9px;align-items:flex-start;
+}
+.prep-emoji{font-size:1.1rem;flex-shrink:0;line-height:1.2;}
+.prep-text{font-size:0.78rem;color:rgba(255,255,255,0.8);line-height:1.4;font-weight:500;}
+
+/* Open time badge */
+.open-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(16,185,129,0.15);
+  border:1px solid rgba(16,185,129,0.3);
+  border-radius:50px;padding:5px 14px;
+  font-size:0.78rem;font-weight:700;color:#6ee7b7;
+  margin-top:18px;
+}
+
+@media(max-width:480px){
+  .prep-grid{grid-template-columns:1fr;}
+  .lock-seg{min-width:50px;padding:8px 10px;}
+  .lock-seg-num{font-size:1.2rem;}
+}
 
 /* === RESPONSIVE === */
 @media(max-width:600px){
@@ -647,11 +721,46 @@ body{
 
     <!-- LOCK BANNER -->
     <div id="lockBanner" class="lock-banner">
-      <span class="lock-icon" id="lockIcon">🔒</span>
-      <div class="lock-title" id="lockTitle">Portal Not Yet Open</div>
-      <div class="lock-sub" id="lockSub">This session's hall plan is not available yet. Please come back at the scheduled time.</div>
-      <div class="lock-countdown" id="lockCountdown">--:--:--</div>
-      <div class="lock-countdown-label" id="lockCountdownLabel">Opens in</div>
+
+      <!-- Header -->
+      <div class="lock-top">
+        <div class="lock-icon-wrap"><span id="lockIconEl">🔒</span></div>
+        <div class="lock-title" id="lockTitle">Portal Not Open Yet</div>
+      </div>
+      <div class="lock-sub" id="lockSub">The seat plan will be available shortly. Use this time wisely!</div>
+
+      <!-- Countdown -->
+      <div class="lock-timer-row">
+        <div class="lock-seg"><span class="lock-seg-num" id="lcdH">00</span><span class="lock-seg-lbl">Hrs</span></div>
+        <div class="lock-timer-sep">:</div>
+        <div class="lock-seg"><span class="lock-seg-num" id="lcdM">00</span><span class="lock-seg-lbl">Min</span></div>
+        <div class="lock-timer-sep">:</div>
+        <div class="lock-seg"><span class="lock-seg-num" id="lcdS">00</span><span class="lock-seg-lbl">Sec</span></div>
+      </div>
+
+      <div class="lock-divider"></div>
+
+      <!-- Motivational Quote -->
+      <div class="mot-quote-block">
+        <div class="mot-quote-text" id="motQuote">"Success is the sum of small efforts, repeated day in and day out."</div>
+        <div class="mot-quote-author" id="motAuthor">— Robert Collier</div>
+      </div>
+
+      <!-- Prep Tips -->
+      <div class="prep-title">✦ Last-Minute Preparation Tips ✦</div>
+      <div class="prep-grid">
+        <div class="prep-card"><span class="prep-emoji">📖</span><span class="prep-text">Quickly revise key formulas and definitions</span></div>
+        <div class="prep-card"><span class="prep-emoji">💧</span><span class="prep-text">Stay hydrated and have a light meal before the exam</span></div>
+        <div class="prep-card"><span class="prep-emoji">🧘</span><span class="prep-text">Take deep breaths — stay calm and confident</span></div>
+        <div class="prep-card"><span class="prep-emoji">🎒</span><span class="prep-text">Keep your Hall Ticket & ID Card ready to go</span></div>
+        <div class="prep-card"><span class="prep-emoji">⏰</span><span class="prep-text">Plan to arrive 15 minutes before the session starts</span></div>
+        <div class="prep-card"><span class="prep-emoji">💪</span><span class="prep-text">Trust your preparation — you are ready for this!</span></div>
+      </div>
+
+      <div style="text-align:center;">
+        <div class="open-badge">🟢 Portal opens at <span id="openTimeLabel" style="margin-left:4px;">—</span></div>
+      </div>
+
     </div>
 
     <!-- RESULT BANNER -->
@@ -775,52 +884,75 @@ function showPopup(msg,title,icon){
 function closePopup(){document.getElementById('popupOverlay').style.display='none';}
 
 /* ---- SESSION TIME GATE ---- */
-/* FN opens 08:15, AN opens 12:15 (IST = local time, server is IST) */
 const SESSION_OPEN = { FN: {h:8,m:15}, AN: {h:12,m:15} };
-
 let lockTimer = null;
+let quoteRotator = null;
+
+const QUOTES = [
+  {q:"Success is the sum of small efforts, repeated day in and day out.", a:"Robert Collier"},
+  {q:"Believe you can and you're halfway there.", a:"Theodore Roosevelt"},
+  {q:"The secret of getting ahead is getting started.", a:"Mark Twain"},
+  {q:"Hard work beats talent when talent doesn't work hard.", a:"Tim Notke"},
+  {q:"It always seems impossible until it's done.", a:"Nelson Mandela"},
+  {q:"Don't watch the clock; do what it does — keep going.", a:"Sam Levenson"},
+  {q:"You are braver than you believe, smarter than you seem.", a:"A.A. Milne"},
+  {q:"The expert in anything was once a beginner.", a:"Helen Hayes"},
+  {q:"Push yourself, because no one else is going to do it for you.", a:"Unknown"},
+  {q:"Great things never come from comfort zones.", a:"Unknown"},
+];
+let quoteIdx = Math.floor(Math.random() * QUOTES.length);
+
+function showNextQuote(){
+  quoteIdx = (quoteIdx + 1) % QUOTES.length;
+  const el = document.getElementById('motQuote');
+  const au = document.getElementById('motAuthor');
+  if(!el||!au) return;
+  el.style.transition='opacity 0.4s';au.style.transition='opacity 0.4s';
+  el.style.opacity='0';au.style.opacity='0';
+  setTimeout(()=>{
+    el.textContent=`"${QUOTES[quoteIdx].q}"`;
+    au.textContent=`— ${QUOTES[quoteIdx].a}`;
+    el.style.opacity='1';au.style.opacity='1';
+  },420);
+}
 
 function getOpenTimeMs(session){
-  const now = new Date();
-  const open = SESSION_OPEN[session];
-  const target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), open.h, open.m, 0, 0);
-  return target - now; /* negative = already open */
+  const now=new Date();
+  const open=SESSION_OPEN[session];
+  return new Date(now.getFullYear(),now.getMonth(),now.getDate(),open.h,open.m,0,0)-now;
 }
-
-function isSessionOpen(session){
-  return getOpenTimeMs(session) <= 0;
-}
-
-function fmtCountdown(ms){
-  if(ms<=0) return '00:00:00';
-  const totalSec = Math.floor(ms/1000);
-  const h = Math.floor(totalSec/3600);
-  const m = Math.floor((totalSec%3600)/60);
-  const s = totalSec%60;
-  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-}
+function isSessionOpen(session){ return getOpenTimeMs(session)<=0; }
 
 function startLockCountdown(session){
   if(lockTimer) clearInterval(lockTimer);
-  const open = SESSION_OPEN[session];
-  const label = session==='FN' ? '8:15 AM' : '12:15 PM';
-  const name  = session==='FN' ? 'Morning (FN)' : 'Afternoon (AN)';
+  if(quoteRotator) clearInterval(quoteRotator);
+  const label = session==='FN'?'8:15 AM':'12:15 PM';
+  const name  = session==='FN'?'Morning (FN)':'Afternoon (AN)';
 
   document.getElementById('lockBanner').style.display='block';
-  document.getElementById('lockIcon').textContent='🔒';
-  document.getElementById('lockTitle').textContent=`${name} Portal Not Open Yet`;
-  document.getElementById('lockSub').textContent=`The seat plan for this session will be available from ${label}. Please return at the scheduled time.`;
-  document.getElementById('lockCountdownLabel').textContent='Opens in';
+  document.getElementById('lockIconEl').textContent=session==='FN'?'☀️':'🌤️';
+  document.getElementById('lockTitle').textContent=`${name} Portal Opens at ${label}`;
+  document.getElementById('lockSub').textContent=`Use this time wisely — review your notes, stay calm, and get ready to shine! 💜`;
+  document.getElementById('openTimeLabel').textContent=label;
+
+  const q=QUOTES[quoteIdx];
+  document.getElementById('motQuote').textContent=`"${q.q}"`;
+  document.getElementById('motAuthor').textContent=`— ${q.a}`;
+
+  quoteRotator=setInterval(showNextQuote,8000);
 
   function updateLock(){
-    const ms = getOpenTimeMs(session);
+    const ms=getOpenTimeMs(session);
     if(ms<=0){
-      clearInterval(lockTimer);
+      clearInterval(lockTimer);clearInterval(quoteRotator);
       document.getElementById('lockBanner').style.display='none';
-      toast('✅ Portal is now open! You can view your seat.');
+      toast('🎉 Portal is now open! You can view your seat.');
       return;
     }
-    document.getElementById('lockCountdown').textContent=fmtCountdown(ms);
+    const totalSec=Math.floor(ms/1000);
+    document.getElementById('lcdH').textContent=String(Math.floor(totalSec/3600)).padStart(2,'0');
+    document.getElementById('lcdM').textContent=String(Math.floor((totalSec%3600)/60)).padStart(2,'0');
+    document.getElementById('lcdS').textContent=String(totalSec%60).padStart(2,'0');
   }
   updateLock();
   lockTimer=setInterval(updateLock,1000);
