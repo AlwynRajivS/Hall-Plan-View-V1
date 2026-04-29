@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Exam Hall Plan — Student Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display&family=DM+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --pur1:#2D0065;
@@ -26,7 +26,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
-  font-family:'Plus Jakarta Sans',sans-serif;
+  font-family:'DM Sans',sans-serif;
   min-height:100vh;
   background:#0D0025;
   overflow-x:hidden;
@@ -152,7 +152,7 @@ body{
   margin-bottom:14px;
 }
 .hero-title{
-  font-family:'Syne',sans-serif;
+  font-family:'DM Serif Display',serif;
   font-size:clamp(2rem,7vw,3.2rem);
   font-weight:800;
   color:#fff;
@@ -183,13 +183,13 @@ body{
   min-width:52px;
 }
 .clock-num{
-  font-family:'JetBrains Mono',monospace;
+  font-family:'DM Mono',monospace;
   font-size:1.3rem;font-weight:700;
   color:var(--pur2);display:block;
 }
 .clock-lbl{font-size:0.6rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);}
 .clock-sep{
-  font-family:'JetBrains Mono',monospace;font-size:1.4rem;
+  font-family:'DM Mono',monospace;font-size:1.4rem;
   color:rgba(255,255,255,0.5);
   animation:blink 1s step-end infinite;padding-bottom:8px;
 }
@@ -238,7 +238,7 @@ body{
   border:1.5px solid rgba(139,92,246,0.2);
   border-radius:12px;
   padding:12px 14px;
-  font-family:'Plus Jakarta Sans',sans-serif;
+  font-family:'DM Sans',sans-serif;
   font-size:0.95rem;
   font-weight:500;
   color:var(--text-dark);
@@ -262,7 +262,7 @@ body{
   background-size:200% 200%;
   color:#fff;border:none;border-radius:14px;
   padding:14px 28px;
-  font-family:'Plus Jakarta Sans',sans-serif;
+  font-family:'DM Sans',sans-serif;
   font-size:1rem;font-weight:800;
   cursor:pointer;letter-spacing:0.3px;
   box-shadow:0 8px 28px rgba(109,40,217,0.45);
@@ -287,7 +287,7 @@ body{
   border:1.5px solid rgba(139,92,246,0.25);
   color:var(--pur2);border-radius:12px;
   padding:12px 20px;
-  font-family:'Plus Jakarta Sans',sans-serif;
+  font-family:'DM Sans',sans-serif;
   font-size:0.9rem;font-weight:600;cursor:pointer;
   transition:all 0.2s;
 }
@@ -444,7 +444,7 @@ body{
   background:radial-gradient(ellipse at 30% 30%,rgba(255,255,255,0.08),transparent 60%);
 }
 .mot-emoji{font-size:2.4rem;display:block;margin-bottom:10px;}
-.mot-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:6px;position:relative;}
+.mot-title{font-family:'DM Serif Display',serif;font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:6px;position:relative;}
 .mot-text{font-size:0.9rem;color:rgba(255,255,255,0.75);position:relative;line-height:1.6;}
 
 /* === MODAL === */
@@ -463,7 +463,7 @@ body{
 }
 @keyframes modalPop{from{opacity:0;transform:scale(0.85);}to{opacity:1;transform:scale(1);}}
 .modal-box h3{
-  font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;
+  font-family:'DM Serif Display',serif;font-size:1.3rem;font-weight:800;
   color:var(--text-dark);margin-bottom:18px;
   padding-bottom:14px;border-bottom:1.5px solid #F0EBF8;
 }
@@ -499,7 +499,7 @@ body{
   animation:modalPop 0.4s cubic-bezier(.34,1.56,.64,1) both;
 }
 .popup-icon{font-size:2.4rem;display:block;margin-bottom:10px;}
-.popup h3{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;color:var(--text-dark);margin-bottom:8px;}
+.popup h3{font-family:'DM Serif Display',serif;font-size:1.15rem;font-weight:800;color:var(--text-dark);margin-bottom:8px;}
 .popup p{color:#6B5B80;font-size:0.9rem;margin-bottom:20px;line-height:1.5;}
 
 /* === TOAST === */
@@ -518,6 +518,36 @@ body{
 /* === ANIMATIONS === */
 @keyframes slideDown{from{opacity:0;transform:translateY(-24px);}to{opacity:1;transform:translateY(0);}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+
+/* === SESSION LOCK BANNER === */
+.lock-banner{
+  background:linear-gradient(135deg,#1A0040,#3B0080);
+  border:1.5px solid rgba(196,160,255,0.3);
+  border-radius:18px;
+  padding:22px 24px;
+  text-align:center;
+  margin-top:16px;
+  display:none;
+  animation:popIn 0.4s cubic-bezier(.34,1.56,.64,1) both;
+}
+.lock-icon{font-size:2.2rem;display:block;margin-bottom:10px;}
+.lock-title{
+  font-family:'DM Serif Display',serif;
+  font-size:1.25rem;font-weight:400;
+  color:#fff;margin-bottom:6px;
+}
+.lock-sub{font-size:0.9rem;color:rgba(255,255,255,0.65);line-height:1.5;margin-bottom:16px;}
+.lock-countdown{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.2);
+  border-radius:50px;padding:8px 18px;
+  font-family:'DM Mono',monospace;
+  font-size:1rem;font-weight:500;
+  color:#E8D8FF;
+  letter-spacing:1px;
+}
+.lock-countdown-label{font-size:0.72rem;color:var(--pur5);font-weight:600;letter-spacing:1px;display:block;margin-top:6px;}
 
 /* === RESPONSIVE === */
 @media(max-width:600px){
@@ -603,6 +633,25 @@ body{
     <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
       <button class="btn-main" id="viewBtn" onclick="showInstructions()">🚀 Check My Seat</button>
       <span style="font-size:0.8rem;color:#9B8BBE;">Instructions appear before viewing</span>
+    </div>
+
+    <!-- SESSION OPEN TIMES INFO -->
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+      <div style="background:#F5F0FF;border:1px solid #DDD0F5;border-radius:10px;padding:8px 14px;font-size:0.8rem;color:var(--text-mid);font-weight:600;display:flex;align-items:center;gap:6px;">
+        ☀️ <span>FN Opens: <strong>8:15 AM</strong></span>
+      </div>
+      <div style="background:#F5F0FF;border:1px solid #DDD0F5;border-radius:10px;padding:8px 14px;font-size:0.8rem;color:var(--text-mid);font-weight:600;display:flex;align-items:center;gap:6px;">
+        🌤️ <span>AN Opens: <strong>12:15 PM</strong></span>
+      </div>
+    </div>
+
+    <!-- LOCK BANNER -->
+    <div id="lockBanner" class="lock-banner">
+      <span class="lock-icon" id="lockIcon">🔒</span>
+      <div class="lock-title" id="lockTitle">Portal Not Yet Open</div>
+      <div class="lock-sub" id="lockSub">This session's hall plan is not available yet. Please come back at the scheduled time.</div>
+      <div class="lock-countdown" id="lockCountdown">--:--:--</div>
+      <div class="lock-countdown-label" id="lockCountdownLabel">Opens in</div>
     </div>
 
     <!-- RESULT BANNER -->
@@ -725,8 +774,91 @@ function showPopup(msg,title,icon){
 }
 function closePopup(){document.getElementById('popupOverlay').style.display='none';}
 
+/* ---- SESSION TIME GATE ---- */
+/* FN opens 08:15, AN opens 12:15 (IST = local time, server is IST) */
+const SESSION_OPEN = { FN: {h:8,m:15}, AN: {h:12,m:15} };
+
+let lockTimer = null;
+
+function getOpenTimeMs(session){
+  const now = new Date();
+  const open = SESSION_OPEN[session];
+  const target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), open.h, open.m, 0, 0);
+  return target - now; /* negative = already open */
+}
+
+function isSessionOpen(session){
+  return getOpenTimeMs(session) <= 0;
+}
+
+function fmtCountdown(ms){
+  if(ms<=0) return '00:00:00';
+  const totalSec = Math.floor(ms/1000);
+  const h = Math.floor(totalSec/3600);
+  const m = Math.floor((totalSec%3600)/60);
+  const s = totalSec%60;
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function startLockCountdown(session){
+  if(lockTimer) clearInterval(lockTimer);
+  const open = SESSION_OPEN[session];
+  const label = session==='FN' ? '8:15 AM' : '12:15 PM';
+  const name  = session==='FN' ? 'Morning (FN)' : 'Afternoon (AN)';
+
+  document.getElementById('lockBanner').style.display='block';
+  document.getElementById('lockIcon').textContent='🔒';
+  document.getElementById('lockTitle').textContent=`${name} Portal Not Open Yet`;
+  document.getElementById('lockSub').textContent=`The seat plan for this session will be available from ${label}. Please return at the scheduled time.`;
+  document.getElementById('lockCountdownLabel').textContent='Opens in';
+
+  function updateLock(){
+    const ms = getOpenTimeMs(session);
+    if(ms<=0){
+      clearInterval(lockTimer);
+      document.getElementById('lockBanner').style.display='none';
+      toast('✅ Portal is now open! You can view your seat.');
+      return;
+    }
+    document.getElementById('lockCountdown').textContent=fmtCountdown(ms);
+  }
+  updateLock();
+  lockTimer=setInterval(updateLock,1000);
+}
+
+function hideLockBanner(){
+  document.getElementById('lockBanner').style.display='none';
+  if(lockTimer){ clearInterval(lockTimer); lockTimer=null; }
+}
+
+/* Update lock banner whenever session dropdown changes */
+document.getElementById('session').addEventListener('change', function(){
+  const ses=this.value;
+  if(!isSessionOpen(ses)){
+    startLockCountdown(ses);
+  } else {
+    hideLockBanner();
+  }
+});
+
 /* ---- MODAL ---- */
 function showInstructions(){
+  const ses = document.getElementById('session').value;
+
+  /* Time gate check */
+  if(!isSessionOpen(ses)){
+    startLockCountdown(ses);
+    const label = ses==='FN' ? '8:15 AM' : '12:15 PM';
+    showPopup(
+      `The ${ses==='FN'?'Morning (FN)':'Afternoon (AN)'} session hall plan is only available from ${label}. Please try again after that time.`,
+      'Portal Not Open Yet',
+      '🔒'
+    );
+    return;
+  }
+
+  hideLockBanner();
+
   if(!document.getElementById('date').value){showPopup('Please select the exam date.','Missing Date','📅');return;}
   if(!document.getElementById('regno').value.trim()){showPopup('Please enter your Register Number.','Missing Input','🎓');return;}
   document.getElementById('instrModal').style.display='flex';
